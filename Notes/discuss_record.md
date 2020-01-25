@@ -7,9 +7,7 @@
 - 学习使用Git,参见[廖雪峰的教程](https://www.liaoxuefeng.com/wiki/896043488029600 "liaoxuefeng")
 
 最终的页面设计图：
-[view](/view.jpg "view")
-<br>
-<br>
+[view](./view.jpg "view")
 
 
 
