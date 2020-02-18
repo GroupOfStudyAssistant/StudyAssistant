@@ -1,42 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
+{% block content %}
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>StudyAssistant</title>
-
-  <!-- Bootstrap core CSS -->
-  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-
-  <!-- Custom fonts for this template -->
-  <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='vendor/simple-line-icons/css/simple-line-icons.css') }}" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-  
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/landing-page.min.css') }}" rel="stylesheet">
-
-</head>
-
-<body>
-
-    <!-- Navigation 需要修改-->
-    <nav class="navbar navbar-light bg-light static-top">
-      <div class="container">
-        <a class="navbar-brand" href="#">StudyAssistant</a>
-        <div class="float-right">
-          <a class="btn btn-primary" href="/signin.html">Sign In</a>
-          <a class="btn btn-primary" href="/signup.html">Sign Up</a>
-        </div>
-        
+  <!-- Navigation 需要修改-->
+  <nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">StudyAssistant</a>
+      <div class="float-right">
+        <a class="btn btn-primary" href="/signin.html">Sign In</a>
+        <a class="btn btn-primary" href="/signup.html">Sign Up</a>
       </div>
-    </nav>
-
+      
+    </div>
+  </nav>
 
   <!-- Masthead -->
   <header class="masthead text-white text-center">
@@ -171,57 +147,4 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer bg-light">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
-          <ul class="list-inline mb-2">
-            <li class="list-inline-item">
-              <a href="#">关于</a>
-            </li>
-            <li class="list-inline-item">&sdot;</li>
-            <li class="list-inline-item">
-              <a href="#">联系我们</a>
-            </li>
-            <li class="list-inline-item">&sdot;</li>
-            <li class="list-inline-item">
-              <a href="#">开发团队</a>
-            </li>
-            <li class="list-inline-item">&sdot;</li>
-            <li class="list-inline-item">
-              <a href="#">隐私政策</a>
-            </li>
-          </ul>
-          <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2020. All Rights Reserved.</p>
-        </div>
-        <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
-          <ul class="list-inline mb-0">
-            <li class="list-inline-item mr-3">
-              <a href="#">
-                <i class="fab fa-facebook fa-2x fa-fw"></i>
-              </a>
-            </li>
-            <li class="list-inline-item mr-3">
-              <a href="#">
-                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#">
-                <i class="fab fa-instagram fa-2x fa-fw"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Bootstrap core JavaScript -->
-  <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  
-</body>
-
-</html>
+{% endblock content %}
