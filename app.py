@@ -22,6 +22,16 @@ def index():
     # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
     return render_template('index.html')
 
+#代码修饰器
+
+#模板上下文
+@app.context_processor
+def inject_user():
+    users = User.query.all() #数据只有三个,此处查询所有用户并注入
+    return users #这样做不确定是否可行
+
+
+
 
 # 注册flask命令
 # 自动创建数据库
@@ -34,9 +44,9 @@ def initdb(drop):
     db.create_all()
     click.echo('Initialized database.')  # 输出提示信息
 
+#生成测试数据
 @app.cli.command()
 def forge():
-    #生成测试数据
     db.create_all()
     users = [
         {'name':'FanYx'},
