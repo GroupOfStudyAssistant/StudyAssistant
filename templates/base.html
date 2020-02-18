@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-
+  {% block head %}
+  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
@@ -20,11 +21,13 @@
   
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/landing-page.min.css') }}" rel="stylesheet">
+  
+  {% endblock head %}
 
 </head>
 
 <body>
-  {% block content %}{% endblock %}
+  {% block content %}{% endblock content%}
 
   <!-- Footer -->
   <footer class="footer bg-light">
