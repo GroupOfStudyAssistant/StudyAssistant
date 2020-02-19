@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 import click
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user
+from flask_login import LoginManager, UserMixin,\
+    login_user, login_required, logout_user, current_user
 
 
 #应用设置
@@ -16,6 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的
 # 拓展类
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
+login_manager.login_view = 'signin' #未登录视图保护的重定向端点
 
 @login_manager.user_loader
 def load_user(user_id): #用户加载回调函数,具体意义不明
@@ -70,6 +72,9 @@ def signup():
 #登录功能
 @app.route('/signin', methods = ['GET', 'POST'])
 def signin():
+    if current_user.is_authenticated:
+        return redirect(url_for('welcome'))
+
     if request.method == 'POST':
         username = request.form['user_name']
         password = request.form['user_password']
@@ -87,16 +92,22 @@ def signin():
         return redirect(url_for('signin'))
 
     return render_template('signin.html')
+    
 
 #展示
 @app.route('/welcome')
+@login_required
 def welcome():
-
     return render_template('welcome.html')
 
+@app.route('/signout')
+@login_required
+def signout():
+    logout_user()
+    flash('Signout')
+    return redirect(url_for('index'))
+
 #代码修饰器
-
-
 
 
 

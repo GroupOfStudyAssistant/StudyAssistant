@@ -11,7 +11,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="">StudyAssistant</a>
+      <a class="navbar-brand" href="{{url_for('index')}}">StudyAssistant</a>
       <div class="float-right col-6">
         <!--<div class="col-lg-6">-->
           <div class="input-group">
@@ -22,7 +22,7 @@
           </div>
         <!--</div>-->
       </div>
-      <a class="btn btn-primary" href="index.html">Log Out</a>
+      <a class="btn btn-primary" href="{{url_for('signout')}}">Log Out</a>
     </div>
   </nav>
 
