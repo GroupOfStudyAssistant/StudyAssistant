@@ -11,7 +11,13 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="{{url_for('index')}}">StudyAssistant</a>
+      <a class="navbar-brand" href="{{url_for('index')}}">
+        {% if current_user.is_authenticated %}
+        {{current_user.username}}
+        {% else %}
+        StudyAssistant
+        {% endif %}
+      </a>
       <div class="float-right col-6">
         <!--<div class="col-lg-6">-->
           <div class="input-group">
