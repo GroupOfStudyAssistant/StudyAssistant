@@ -1,4 +1,5 @@
 import unittest # 测试框架，用于对函数等独立的单元编写测试
+import re
 
 from app import app, db, User, initdb, forge
 
@@ -12,7 +13,7 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
         )
         # 创建数据库和表
         db.create_all()
-        user = User(name='Test')
+        user = User(username='Test')
         user.set_password('123')
         db.session.add(user)
         db.session.commit()
@@ -45,31 +46,13 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
             user_name='Test', # <input>元素的name属性
             user_password='123'
         ), follow_redirects=True) # 跟随重定向
-    
-
-    # 测试需要登录的项目，暂时不需要
-    '''
-    def test_xxx(self):
-        self.login()
-
-        response = self.client.post('/', data=dict(
-            user_name='xx',
-            user_password='xx'
-        ), follow_redirects=True)
-        data = response.get_data(as_text=True)
-        self.assertIn('Item created.', data)
-        self.assertIn('New Movie', data)
-
-        response = self.client.post
-    '''
 
     # 测试登录保护
     def test_login_protect(self):
-        response = self.client.get('/welcome')
+        response = self.client.get('/welcome', follow_redirects=True)
         data = response.get_data(as_text=True)
-        self.assertIn('Please log in to access this page.')
+        self.assertIn('Please log in to access this page.', data) # 问题：这句似乎不会显示在响应内
         self.assertNotIn('Log Out', data)
-        self.assertNotIn('StudyAssistant', data)
 
     # 测试登录
     def test_signin_page(self):
@@ -79,12 +62,13 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
         ), follow_redirects=True)
         data = response.get_data(as_text=True)
         self.assertIn('Login success.', data)
-        self.assertNotIn('StudyAssistant', data)
+        self.assertNotRegexpMatches(data, '<a class="navbar-brand" href="/">.*StudyAssistant.*</a>')
         self.assertIn('Search for...', data)
-        self.assertIn('Test', data)
+        self.assertRegexpMatches(data, re.compile('<a class="navbar-brand" href="/">.*Test.*</a>', re.S))
         self.assertIn('Log Out', data)
 
         # 测试使用错误的密码登录
+        self.client.get('/signout', follow_redirects=True) # 先清除之前的登录
         response = self.client.post('/signin', data=dict(
             user_name='Test',
             user_password='456'
@@ -122,10 +106,11 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
 
     # 测试注册
     def test_signup_page(self):
-        '''
-        不太清楚测试时数据库是否会随时清空/以测试函数为单元清空
-        如果是，则signup测试都会提示Username Occupied!
-        '''
+
+        # 清除之前注册的用户
+        for u in User.query.all():
+            db.session.delete(u)
+        db.session.commit()
 
         response = self.client.post('/signup', data=dict(
             user_name='Test', 
@@ -134,15 +119,16 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
         ), follow_redirects=True)
         data = response.get_data(as_text=True)
         self.assertIn('Success Signup!', data)
-        self.assertNotIn('StudyAssistant', data)
+        self.assertNotRegexpMatches(data, '<a class="navbar-brand" href="/">.*StudyAssistant.*</a>')
         self.assertIn('Search for...', data)
-        self.assertIn('Test', data)
+        self.assertRegexpMatches(data, re.compile('<a class="navbar-brand" href="/">.*Test.*</a>', re.S))
         self.assertIn('Log Out', data)
 
         # 测试使用已存在的用户名注册
-        self.client.post('/signin', data=dict( 
+        self.client.post('/signup', data=dict( 
             user_name='Test01', 
-            user_password='12301'
+            user_password='12301',
+            user_password_1='12301'
         ), follow_redirects=True) 
 
         response = self.client.post('/signup', data=dict(
@@ -155,8 +141,9 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
         self.assertIn('Username Occupied!', data)   
 
         # 两次密码输入不一致
-        response = self.client.post('/signup, data=dict(
-            user_name='Test',
+        self.client.get('/signout', follow_redirects=True) # 先清除之前的登录
+        response = self.client.post('/signup', data=dict(
+            user_name='Test02',
             user_password='123',
             user_password_1='456'
         ), follow_redirects=True)
@@ -197,10 +184,10 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
     def test_logout(self):
         self.login()
 
-        response = self.client.get('/logout', follow_redirects=True)
+        response = self.client.get('/signout', follow_redirects=True)
         data = response.get_data(as_text=True)
         self.assertIn('Signout success.', data) 
-        self.assertIn('StudyAssistant', data)
+        self.assertRegexpMatches(data, '<a class="navbar-brand" href="/">.*StudyAssistant.*</a>')
         self.assertIn('Sign In', data)
         self.assertIn('Sign Up', data)
         self.assertNotIn('Search for...', data)
@@ -212,10 +199,10 @@ class WebsiteTestCase(unittest.TestCase): # 测试用例
 
         response = self.client.get('/welcome')
         data = response.get_data(as_text=True)
-        self.assertIn('Test', data)
+        self.assertRegexpMatches(data, re.compile('<a class="navbar-brand" href="/">.*Test.*</a>', re.S))
         self.assertIn('Search for...', data)
         self.assertIn('Log Out', data)        
-        self.assertNotIn('StudyAssistant', data)
+        self.assertNotRegexpMatches(data, '<a class="navbar-brand" href="/">.*StudyAssistant.*</a>')
         self.assertEqual(response.status_code, 200)
 
     # 测试初始化数据库
