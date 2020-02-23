@@ -72,4 +72,5 @@ SQLAlchemy的查询操作文档无法访问,如果要使用该数据库封装方
 
 1. 标签页的样式（感觉是和landingpage的样式有冲突）
 2. 关闭网页时自动logout（否则再次打开无signin signup按钮，只有最下方有welcome按钮），需要修改
-3. 注册/登录成功后消息slash在页面顶部，刷新才会消失
+3. 注册/登录成功后消息flash在页面顶部，刷新才会消失
+4. welcome页面的搜索框是否需要加`<form method="post">`？

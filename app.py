@@ -52,12 +52,17 @@ def signup():
         username = request.form.get('user_name')
         password = request.form.get('user_password')
         password1 = request.form.get('user_password_1')
+
+        if not username or not password or not password1:
+            flash('Invalid input.')
+            return redirect(url_for('signup'))       
+
         userexist = User.query.filter_by(username = username).count()
         if userexist: #用户名已经存在
             flash('Username Occupied!')
             return redirect(url_for('signup'))
         if password!=password1: #密码验证失败
-            flash('Two passwords do not match')
+            flash('Two passwords do not match.')
             return redirect(url_for('signup')) #重定向为注册页(可改进保留用户名)
         # 保存到数据库
         user = User(username = username)
@@ -65,7 +70,9 @@ def signup():
         db.session.add(user)
         db.session.commit()
         flash('Success Signup!')
-        return redirect(url_for('signin')) #重定向到登陆界面/可改进为直接登录
+        login_user(user)
+        return redirect(url_for('welcome')) #直接登录
+
     # 如果不是post请求就返回模板
     return render_template('signup.html')
 
@@ -83,8 +90,9 @@ def signin():
             return redirect(url_for('signin'))
         
         user = User.query.filter_by(username = username).first()
+        userexist = User.query.filter_by(username = username).count()
         #验证密码
-        if username == user.username and user.validate_password(password):
+        if userexist and username == user.username and user.validate_password(password):
             login_user(user) #登入
             flash('Login success.')
             return redirect(url_for('welcome'))
@@ -93,7 +101,6 @@ def signin():
 
     return render_template('signin.html')
     
-
 #展示
 @app.route('/welcome')
 @login_required
@@ -104,7 +111,7 @@ def welcome():
 @login_required
 def signout():
     logout_user()
-    flash('Signout')
+    flash('Signout success.')
     return redirect(url_for('index'))
 
 #代码修饰器
@@ -148,4 +155,4 @@ def forge():
         db.session.add(user)
 
     db.session.commit()
-    click.echo('Done')
+    click.echo('Done.')
