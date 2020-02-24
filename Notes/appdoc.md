@@ -48,13 +48,6 @@ SQLAlchemy的查询操作文档无法访问,如果要使用该数据库封装方
 
 链接跳转时需要使用url_for函数以及jinja变量嵌入
 
-20200223
-
-测试时同一个测试函数（针对同一个页面）内不会清空数据库，在测试该页面上不同的功能时可能需要手动退出之前的用户登录或者清空数据库
-
-对assert的了解不够深入，不知道是否有更高效和精准的方法
-
-目前的测试只有76%的覆盖率，还需提高
 
 未登录用户不能执行以下操作:
 不能进入welcome界面(welcome路由)
@@ -82,3 +75,57 @@ SQLAlchemy的查询操作文档无法访问,如果要使用该数据库封装方
 2. 关闭网页时自动logout（否则再次打开无signin signup按钮，只有最下方有welcome按钮），需要修改
 3. 注册/登录成功后消息flash在页面顶部，刷新才会消失
 4. welcome页面的搜索框是否需要加`<form method="post">`？
+
+20200223
+
+测试时同一个测试函数（针对同一个页面）内不会清空数据库，在测试该页面上不同的功能时可能需要手动退出之前的用户登录或者清空数据库
+
+对assert的了解不够深入，不知道是否有更高效和精准的方法
+
+目前的测试只有76%的覆盖率，还需提高
+
+执行单元测试的方法：（出错则可看到出错信息）
+```
+(env) $ python test.py
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 2.942s
+
+OK
+```
+查看测试覆盖率：
+```
+(env) $ pip install coverage
+(env) $ coverage run --source=flaskweb test.py  (测试并汇报)
+$ coverage report
+Name     Stmts   Miss  Cover
+----------------------------
+xx.py     146      5    97%
+```
+
+20200224:
+使用包组织程序，调整后项目文件结构如下：
+```
+├── .flaskenv
+├── test.py            # 测试程序
+└── flaskweb           # 程序包
+    ├── __init__.py    # 包构造文件，创建程序实例和拓展对象，定义应用设置
+    ├── commands.py    # 命令函数
+    ├── models.py      # 模型类
+    ├── views.py       # 视图函数
+    ├── static
+    │   ├── css
+    │   │   ├──landing-page.css
+    │   │   └──landing-page.min.css
+    │   ├── img   
+    │   │   └── ...(原模板自带图片7张)
+    │   └── vendor
+    │   │   └── ...(原模板自带样式和字体)
+    └── templates
+        ├── base.html
+        ├── index.html
+        ├── signin.html
+        ├── signup.html
+        └── welcome.html
+```
+运行程序方法没变，仍是在StudyAssistant文件夹下，先`flask initdb`初始化数据库，再`flask forge`生成虚拟数据，最后`flask run`运行

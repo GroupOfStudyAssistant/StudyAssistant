@@ -1,5 +1,8 @@
 import unittest # 测试框架，用于对函数等独立的单元编写测试
 import re
+from flaskweb import app, db # 导入程序实例和扩展对象
+from flaskweb.models import User # 导入模型类
+from flaskweb.commands import initdb, forge # 导入命令
 
 from app import app, db, User, initdb, forge
 

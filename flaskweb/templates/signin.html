@@ -4,10 +4,10 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="/index.html">StudyAssistant</a>
+      <a class="navbar-brand" href="{{ url_for('index') }}">StudyAssistant</a>
       <div class="float-right">
-        <a class="btn btn-primary" href="/signin.html">Sign In</a>
-        <a class="btn btn-primary" href="/signup.html">Sign Up</a>
+        <a class="btn btn-primary" href="{{ url_for('signin') }}">Sign In</a>
+        <a class="btn btn-primary" href="{{ url_for('signup') }}">Sign Up</a>
       </div>
       
     </div>
