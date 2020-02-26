@@ -129,3 +129,18 @@ xx.py     146      5    97%
         └── welcome.html
 ```
 运行程序方法没变，仍是在StudyAssistant文件夹下，先`flask initdb`初始化数据库，再`flask forge`生成虚拟数据，最后`flask run`运行
+
+20200226:
+老师提供的数据库包括8个表：
+可用：
+1. concept: concept和definition，均为text
+2. entity: EntityName和Wiki(其维基百科链指)，待探索用法
+3. mooc: name, chinesename, duration, platform, school, department
+    1988条数据，其中200为计算机领域课程，中英文都有，url全不可用
+
+不可用：
+1. user: 师姐项目的user
+2. userentity: EntityName和Master，意义不明
+3. entityvideo: VID, EName, time，不可用（师姐遗留）
+4. uservideo: VID, lastlearn(日期时间)
+5. video: VID, VName, Course, Vurl，是Coursera上部分视频的记录，只涉及5门课内47个视频片段，大概是师姐遗留产物
