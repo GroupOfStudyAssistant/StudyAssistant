@@ -133,8 +133,8 @@ xx.py     146      5    97%
 20200226:
 老师提供的数据库包括8个表：
 可用：
-1. concept: concept和definition，均为text
-2. entity: EntityName和Wiki(其维基百科链指)，待探索用法
+1. concept: concept和definition，均为text， 3810000+条，但只有少数与计算机相关
+2. entity: EntityName和Wiki(其维基百科链指)，153个实体，大概一半跟计算机有关，待探索用法
 3. mooc: name, chinesename, duration, platform, school, department
     1988条数据，其中200为计算机领域课程，中英文都有，url全不可用
 
