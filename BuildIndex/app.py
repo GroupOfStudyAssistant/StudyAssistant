@@ -1,5 +1,5 @@
 import pymysql
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, helpers
 
 user_query = "ethnic group"
 
@@ -10,18 +10,22 @@ db = pymysql.connect("localhost", "root", "123456", "concept_graph")
 cursor = db.cursor()
 cursor.execute("SELECT * FROM CONCEPT")
 data = cursor.fetchall()
-i = 0
 for d in data:
-    print(i)
-    i += 1
-    dict = {}
-    dict['concept'] = d[1]
-    dict['definition'] = d[2]
-    result = es.index(index='conceptlist', doc_type='condef', body=dict)
-    #print(result)
+    action = {
+        "_index": "conceptlist",
+        "_type": "condef",
+        "_source": {
+            "concept": d[1],
+            "definition": d[2]
+        }
+    }
+    li.append(action)
 db.close()
 
+# 批量插入数据到es
+helpers.bulk(es, li)
 
+# 查询
 dsl = {
     'query': {
         'multi_match': {
