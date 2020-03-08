@@ -18,7 +18,7 @@ login_manager.login_view = 'signin' #未登录视图保护的重定向端点
 
 @login_manager.user_loader
 def load_user(user_id): #用户加载回调函数,具体意义不明
-    from flaskweb.models import User
+    from Web.models import User
     user = User.query.get(int(user_id))
     return user
 
@@ -26,10 +26,10 @@ def load_user(user_id): #用户加载回调函数,具体意义不明
 '''暂时不需要
 @app.context_processor
 def inject_user():
-    from flaskweb.models import User
+    from Web.models import User
     users = User.query.all() #数据只有三个,此处查询所有用户并注入
     return users #这样做不确定是否可行
 '''
 
 # 将视图函数、命令函数注册到程序实例上
-from flaskweb import views, commands
+from Web import views, commands

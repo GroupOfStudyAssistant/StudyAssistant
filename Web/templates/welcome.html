@@ -11,7 +11,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="{{url_for('index')}}">
+      <a class="navbar-brand" href="#">
         {% if current_user.is_authenticated %}
         {{current_user.username}}
         {% else %}

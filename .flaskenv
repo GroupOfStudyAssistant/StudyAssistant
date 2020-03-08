@@ -1,2 +1,2 @@
 FLASK_ENV=development
-FLASK_APP=flaskweb
+FLASK_APP=Web

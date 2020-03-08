@@ -1,8 +1,8 @@
 from flask import render_template, url_for, request, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
-from flaskweb import app, db
-from flaskweb.models import User
+from Web import app, db
+from Web.models import User
 
 # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
 @app.route('/', methods=['GET', 'POST'])

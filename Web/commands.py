@@ -1,7 +1,7 @@
 import click
 
-from flaskweb import app, db
-from flaskweb.models import User
+from Web import app, db
+from Web.models import User
 
 # 自动创建数据库
 @app.cli.command()
