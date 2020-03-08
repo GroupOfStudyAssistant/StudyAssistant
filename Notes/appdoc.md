@@ -1,13 +1,10 @@
-网站开发文档与使用文档.
-(需要按照软件工程的要求书写)
+# 网站开发文档(与使用文档)
 
 
 
+## 使用web展示内容
 
-
-
-
-### 使用web展示内容
+<img src="appdoc.assets/view.jpg" alt="view" style="zoom: 25%;" />
 
 使用flask框架实现web架构. 
 
@@ -16,8 +13,6 @@
 范围初步限于计算机科学领域.
 
 及时总结.
-
-20200126
 
 20200218
 
@@ -29,8 +24,6 @@
 
 "/welcome”路由对应登录后的界面, 进行内容的展示.(可以考虑与首页合并, 设计不同的视图.)
 提供登出选项, 重定向到"/"
-
-
 
 20200219
 
@@ -47,7 +40,6 @@ request.form.get()方法从post请求中获取表格数据,但是需要传入的
 SQLAlchemy的查询操作文档无法访问,如果要使用该数据库封装方案,则必须了解文档.
 
 链接跳转时需要使用url_for函数以及jinja变量嵌入
-
 
 未登录用户不能执行以下操作:
 不能进入welcome界面(welcome路由)
@@ -133,6 +125,7 @@ xx.py     146      5    97%
 20200226:
 老师提供的数据库包括8个表：
 可用：
+
 1. concept: concept和definition，均为text， 3810000+条，但只有少数与计算机相关
 2. entity: EntityName和Wiki(其维基百科链指)，153个实体，大概一半跟计算机有关，待探索用法
 3. mooc: name, chinesename, duration, platform, school, department
@@ -144,3 +137,11 @@ xx.py     146      5    97%
 3. entityvideo: VID, EName, time，不可用（师姐遗留）
 4. uservideo: VID, lastlearn(日期时间)
 5. video: VID, VName, Course, Vurl，是Coursera上部分视频的记录，只涉及5门课内47个视频片段，大概是师姐遗留产物
+
+
+
+## 搜索功能
+
+搜索功能的基础是事先用ES建好数据库的索引.
+在webapp中, 主要工作是完成当用户请求查询时, 调用ES的搜索接口检索索引, 返回给用户, 或者, 根据索引中的内容到数据库中查询, 然后返回给用户.
+初步实验仅使用concept表.
