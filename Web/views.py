@@ -1,7 +1,7 @@
 from flask import render_template, url_for, request, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
-from Web import app, db
+from Web import app, db, es
 from Web.models import User
 
 # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
@@ -66,11 +66,22 @@ def signin():
     return render_template('signin.html')
     
 #展示
-@app.route('/welcome')
+@app.route('/welcome', methods = ['GET', 'POST'])
 @login_required
 def welcome():
-    return render_template('welcome.html')
+    textforsearch = ""
+    res = {"concept":"机器学习",
+        "definition": '''机器学习是一门多领域交叉学科，涉及概率论、统计学、逼近论、凸分析、算法复杂度理论等多门学科。
+        专门研究计算机怎样模拟或实现人类的学习行为，以获取新的知识或技能，重新组织已有的知识结构使之不断改善自身的性能。
+        它是人工智能的核心，是使计算机具有智能的根本途径。'''}
+    if request.method == 'POST':
+        textforsearch = request.form.get("keywords")
+        qresult = es.search(index="conceptlist", body={"query": {"match": {"definition": textforsearch}}})
+        res = qresult["hits"]["hits"][0]["_source"]
+    
+    return render_template('welcome.html',res = res)
 
+# 相当于使用一个路由完成登出的功能,比较浪费,最好用js做
 @app.route('/signout')
 @login_required
 def signout():

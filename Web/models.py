@@ -15,3 +15,5 @@ class User(db.Model, UserMixin):  # 表名将会是 user（自动生成，小写
     
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+

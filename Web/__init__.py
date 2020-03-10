@@ -4,6 +4,7 @@ import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from elasticsearch import Elasticsearch
 
 #应用设置
 app = Flask(__name__)
@@ -15,6 +16,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'signin' #未登录视图保护的重定向端点
+# ES实例
+es = Elasticsearch()
+
 
 @login_manager.user_loader
 def load_user(user_id): #用户加载回调函数,具体意义不明
