@@ -20,14 +20,14 @@
       </a>
       <div class="float-right col-6">
         <!--<div class="col-lg-6">-->
+        <form method="post" class="form-horizontal">
           <div class="input-group">
-            <form method="post">
             <input type="text" class="form-control" name="keywords" placeholder="Search for...">
             <span class="input-group-btn">
               <button class="btn btn-primary" type="submit">Go!</button>
             </span>
-          </form>
           </div>
+        </form>
         <!--</div>-->
       </div>
       <a class="btn btn-primary" href="{{url_for('signout')}}">Log Out</a>
@@ -37,8 +37,16 @@
   <!-- Testimonials -->
   <section class="testimonials bg-light">
     <div class="container">
-      <h2 class="mb-5">{{ res["concept"] }}</h2>
-      <p>{{ res["definition"] }}</p>
+      {% if res|length == 1 %} {# 无用户提交时用默认数据 #}
+        <h2 class="mb-5">{{ res[0]["concept"] }}</h2>
+        <p>{{ res[0]["definition"] }}</p>
+      {% else %}
+        <h3> Results: </h3><br>
+        {% for item in res %}
+        <h2 class="mb-5">{{ item["_source"]["concept"] }}</h2>
+        <p>{{ item["_source"]["definition"] }}</p>
+        {% endfor %}
+      {% endif %}
       <br>
       <h2 class="mb-5">相关概念</h2>
     
