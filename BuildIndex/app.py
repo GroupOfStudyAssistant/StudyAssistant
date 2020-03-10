@@ -5,7 +5,9 @@ es = Elasticsearch()
 es.indices.create(index='conceptlist', ignore=400)
 
 li = []
-db = pymysql.connect("localhost", "root", "123456", "concept_graph")
+pdformysql = " " # 数据库密码
+dbname = " " # 数据库名称
+db = pymysql.connect("localhost", "root", pdformysql, dbname)
 cursor = db.cursor()
 cursor.execute("SELECT * FROM CONCEPT")
 data = cursor.fetchall()
