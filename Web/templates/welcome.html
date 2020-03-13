@@ -37,14 +37,14 @@
   <!-- Testimonials -->
   <section class="testimonials bg-light">
     <div class="container">
-      {% if res|length == 1 %} {# 无用户提交时用默认数据 #}
-        <h2 class="mb-5">{{ res[0]["concept"] }}</h2>
-        <p>{{ res[0]["definition"] }}</p>
+      {% if concepts|length == 1 %} {# 无用户提交时用默认数据 #}
+        <h2 class="mb-5">{{ concepts[0]["concept"] }}</h2>
+        <p>{{ concepts[0]["definition"] }}</p>
       {% else %}
         <h3> Results: </h3><br>
-        {% for item in res %}
-        <h2 class="mb-5">{{ item["_source"]["concept"] }}</h2>
-        <p>{{ item["_source"]["definition"] }}</p>
+        {% for concept in concepts %}
+        <h2 class="mb-5">{{ concept["_source"]["concept"]|replace("_", " ") }}</h2>
+        <p>{{ concept["_source"]["definition"] }}</p><br>
         {% endfor %}
       {% endif %}
       <br>
@@ -118,6 +118,27 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="moocs">
         moocs...
+        <p>Here are some mooc resources recommended for you:</p>
+        {% if moocs|length != 0 %}
+        <ol>
+          {% for mooc in moocs %}
+          <li>
+            <strong>{{ mooc["_source"]["name"] }}</strong>
+            <p>
+              {% if mooc["_source"]["platform"] != "" %}
+              Platform: {{ mooc["_source"]["platform"] }},      
+              {% endif %}
+              {% if mooc["_source"]["school"] != "" %}
+              School: {{ mooc["_source"]["school"] }}
+              {% endif %}
+            </p>
+            <!--{% if mooc["_source"]["blackboard"] != "" %}
+            <p>Mooc description: {{ mooc["_source"]["blackboard"]|safe }}</p>
+            {% endif %}-->
+          </li>
+          {% endfor %}
+        </ol>
+        {% endif %}
       </div>
     </div>
   </div>
