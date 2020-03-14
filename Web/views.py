@@ -77,7 +77,7 @@ def welcome():
         它是人工智能的核心，是使计算机具有智能的根本途径。'''}]
     moocs = []
 
-    if request.method == 'POST':
+    if request.method == 'POST': #post方法说明用户提交了查询
         textforsearch = request.form.get("keywords")
         if not textforsearch:
             return redirect(url_for('welcome'))

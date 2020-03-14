@@ -44,8 +44,8 @@ def create_mooc(es):
 
     li = []
     print("loading data from mysql...")
-    pdformysql = "123456" # 数据库密码
-    dbname = "concept_graph" # 数据库名称
+    pdformysql = "7h43rmd2" # 数据库密码
+    dbname = "testforsa" # 数据库名称
     db = pymysql.connect("localhost", "root", pdformysql, dbname)
     cursor = db.cursor()
     cursor.execute("SELECT * FROM MOOC")
