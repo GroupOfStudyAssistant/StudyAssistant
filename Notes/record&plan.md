@@ -1,3 +1,12 @@
+# 20200322 和老师讨论
+
+neo4j先展示出来，web一套查询返回都弄顺了，再考虑算法。
+
+课程体系先弄国外的，用正则匹配。国内的再考虑。(先抓取[MIT](https://www.eecs.mit.edu/academics-admissions/academic-information/subject-updates-spring-2020/68836s076)的课程存入数据库)
+
+先用数据库中已经存在的数据，再考虑很常用但是数据库中没有的。
+
+
 # 20200317
 
 重新确定分工：
