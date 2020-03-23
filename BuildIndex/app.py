@@ -96,7 +96,7 @@ class GraphSearch:
         self.graph = Graph(
             "http://localhost:7474", 
             username = "neo4j", 
-            passwpord = "123456"
+            password = "123456"
         )
 
     # 转化为全小写下划线，与数据库中lowwer_label一致

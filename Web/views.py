@@ -3,8 +3,6 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from Web import app, db, es, graph
 from Web.models import User
-from py2neo import Graph
-
 
 # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
 @app.route('/', methods=['GET', 'POST'])
