@@ -155,8 +155,7 @@ class GraphSearch:
 
 def init_neo4j():
     graph = GraphSearch()
-    relations = graph.getAll("Machine Learning")
-    print(relations)
+
 
 if __name__ == "__main__":
     # init_es()
