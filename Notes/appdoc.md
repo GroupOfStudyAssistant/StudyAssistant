@@ -150,8 +150,19 @@ xx.py     146      5    97%
 
 搜索功能的实现放在welcome路由. 具体方式为搜索框提交的内容发送到该路由, 函数内根据获取的文本进行搜索, 然后进行渲染. 
 
+
 20200313 粗略加了mooc查询部分  
 待完善：
 1. 查询的精细化：添加权重等
 2. 普通数据库->ORM形式，这样才能比较优雅地“返回id，用id去数据库中查询，送至模板”。当前只是单纯返回全部数据。
 3. 更好的数据展示方式，如何跳转，如何折叠+readmore展开
+
+
+20200322 本周大家进展都比较慢
+老师给的neo4j数据部分，参考师姐的论文：
+1. IsA关系：用Wibi_IsA + Wordnet_Hypernyms + WikiData_SubclassOf + WikiData_InstanceOf
+2. Prerequisite关系：来自Wikipedia links和MOOCs。通过计算特征、训练逻辑回归模型、计算得到任意两个概念之间是否有先修关系。模型是基于别人的wikipedia concept map dataset预训练的。
+3. RelatedTo关系：利用skip-gram和node2vec模型分别学习word embedding和network embedding，平均数作为最终embedding. embedding的相似度大于0.3并且有直接link则作为RelatedTo关系
+
+从师兄给的代码可以看出，prerequisite是neo4j中的KGBnu_Ref, RelatedTo是KGBnu_RelatedTo
+

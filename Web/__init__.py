@@ -5,6 +5,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from elasticsearch import Elasticsearch
+from BuildIndex.app import GraphSearch
 
 #应用设置
 app = Flask(__name__)
@@ -18,6 +19,8 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'signin' #未登录视图保护的重定向端点
 # ES实例
 es = Elasticsearch()
+# Neo4j实例
+graph = GraphSearch()
 
 
 @login_manager.user_loader

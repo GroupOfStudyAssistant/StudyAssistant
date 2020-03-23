@@ -1,8 +1,10 @@
 from flask import render_template, url_for, request, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
-from Web import app, db, es
+from Web import app, db, es, graph
 from Web.models import User
+from py2neo import Graph
+
 
 # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
 @app.route('/', methods=['GET', 'POST'])
@@ -64,7 +66,37 @@ def signin():
         return redirect(url_for('signin'))
 
     return render_template('signin.html')
-    
+
+def get_concepts(textforsearch):
+    dsl_concept = {
+        'query': {
+            'multi_match': {
+                'query': textforsearch,
+                'fields': ['concept', 'definition']
+            }
+        }
+    }
+    qresult_concept = es.search(index="conceptlist", body=dsl_concept)
+    concepts = qresult_concept["hits"]["hits"][0:min(3, len(qresult_concept["hits"]["hits"]))]
+    return concepts
+
+def get_relations(textforsearch):
+    relations = graph.getAll(textforsearch)
+    return relations
+
+def get_moocs(textforsearch):
+    dsl_mooc = {
+        'query': {
+            'multi_match': {
+                'query': textforsearch,
+                'fields': ['name', 'blackboard']
+            }
+        }
+    }
+    qresult_mooc = es.search(index="mooc", body=dsl_mooc)
+    moocs = qresult_mooc["hits"]["hits"][0:min(5, len(qresult_mooc["hits"]["hits"]))]
+    return moocs
+
 #展示
 @app.route('/welcome', methods = ['GET', 'POST'])
 @login_required
@@ -75,36 +107,17 @@ def welcome():
         "definition": '''机器学习是一门多领域交叉学科，涉及概率论、统计学、逼近论、凸分析、算法复杂度理论等多门学科。
         专门研究计算机怎样模拟或实现人类的学习行为，以获取新的知识或技能，重新组织已有的知识结构使之不断改善自身的性能。
         它是人工智能的核心，是使计算机具有智能的根本途径。'''}]
+    relations = []
     moocs = []
-
     if request.method == 'POST': #post方法说明用户提交了查询
         textforsearch = request.form.get("keywords")
         if not textforsearch:
             return redirect(url_for('welcome'))
-
-        dsl_concept = {
-            'query': {
-                'multi_match': {
-                    'query': textforsearch,
-                    'fields': ['concept', 'definition']
-                }
-            }
-        }
-        qresult_concept = es.search(index="conceptlist", body=dsl_concept)
-        concepts = qresult_concept["hits"]["hits"][0:min(3, len(qresult_concept["hits"]["hits"]))]
-        
-        dsl_mooc = {
-            'query': {
-                'multi_match': {
-                    'query': textforsearch,
-                    'fields': ['name', 'blackboard']
-                }
-            }
-        }
-        qresult_mooc = es.search(index="mooc", body=dsl_mooc)
-        moocs = qresult_mooc["hits"]["hits"][0:min(5, len(qresult_mooc["hits"]["hits"]))]
-    
-    return render_template('welcome.html', concepts = concepts, moocs = moocs)
+        concepts = get_concepts(textforsearch)
+        relations = get_relations(textforsearch)
+        #print(relations)
+        moocs = get_moocs(textforsearch)
+    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs)
 
 # 相当于使用一个路由完成登出的功能,比较浪费,最好用js做
 @app.route('/signout')
@@ -113,3 +126,5 @@ def signout():
     logout_user()
     flash('Signout success.')
     return redirect(url_for('index'))
+
+

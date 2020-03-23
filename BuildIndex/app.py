@@ -1,5 +1,6 @@
 import pymysql
 from elasticsearch import Elasticsearch, helpers
+from py2neo import Graph, Node, Relationship
 
 def create_concept(es):
     # 为防止插入部分数据后失败，每次运行时如果索引已存在则删除重新创建
@@ -72,7 +73,7 @@ def create_mooc(es):
     helpers.bulk(es, li)
     db.close()
 
-if __name__ == "__main__":
+def init_es():
     es = Elasticsearch()
     # create_concept(es)
     create_mooc(es)
@@ -88,3 +89,75 @@ if __name__ == "__main__":
     }
     result = es.search(index='mooc', body=dsl)
     print(result)
+
+class GraphSearch:
+
+    def __init__(self):
+        self.graph = Graph(
+            "http://localhost:7474", 
+            username = "neo4j", 
+            passwpord = "123456"
+        )
+
+    # 转化为全小写下划线，与数据库中lowwer_label一致
+    @staticmethod # 静态方法装饰器
+    def reg(query_str):
+        return "_".join(x.lower() for x in query_str.split())
+
+    # 匹配，返回节点数组
+    def graph_match(self, keyword, rel_type):
+        result = []
+        keyword = self.reg(keyword)
+        gql = "MATCH (start:WikiConcept)-[rel:" + rel_type + "]->(end:WikiConcept) " \
+            "WHERE start.lowwer_label = \"" + keyword + "\" RETURN end"
+        match_result = self.graph.run(gql).data()
+        for item in match_result:
+            label = item['end'].get("label")
+            result.append(label)
+        return result
+
+    def search_isa(self, keyword):
+        res1 = self.graph_match(keyword, "Wibi_IsA")
+        res2 = self.graph_match(keyword, "Wordnet_Hypernyms")
+        res3 = self.graph_match(keyword, "WikiData_InstanceOf")
+        res = list(set(res1 + res2 + res3)) # 合并，去重
+        return res
+    
+    def search_subclassof(self, keyword):
+        return self.graph_match(keyword, "WikiData_SubclassOf")
+
+    def search_prerequisite(self, keyword):
+        return self.graph_match(keyword, "KGBnu_Ref")
+
+    def search_relatedto(self, keyword):
+        return self.graph_match( keyword, "KGBnu_RelatedTo")
+
+    def getAll(self, keyword):
+        entityRelation = [] # 返回格式按照wangluo.html中的entityRelation的格式
+
+        isa_res = self.search_isa(keyword)
+        res = [{"r": {"name": "IsA"}, "m": {"name", nodename}} for nodename in isa_res]
+        entityRelation.extend(res)
+
+        subclassof_res = self.search_subclassof(keyword)
+        res = [{"r": {"name": "IsA"}, "m": {"name", nodename}} for nodename in subclassof_res]
+        entityRelation.extend(res)
+        
+        prerequisite_res = self.search_prerequisite(keyword)
+        res = [{"r": {"name": "Prerequisite"}, "m": {"name", nodename}} for nodename in prerequisite_res]
+        entityRelation.extend(res)
+
+        relatedto_res = self.search_relatedto(keyword)
+        res = [{"r": {"name": "RelatedTo"}, "m": {"name", nodename}} for nodename in relatedto_res]
+        entityRelation.extend(res)
+
+        return entityRelation
+
+def init_neo4j():
+    graph = GraphSearch()
+    relations = graph.getAll("Machine Learning")
+    print(relations)
+
+if __name__ == "__main__":
+    # init_es()
+    init_neo4j()
