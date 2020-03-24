@@ -136,19 +136,19 @@ class GraphSearch:
         entityRelation = [] # 返回格式按照wangluo.html中的entityRelation的格式
 
         isa_res = self.search_isa(keyword)
-        res = [{"r": {"name": "IsA"}, "m": {"name", nodename}} for nodename in isa_res]
+        res = [{"r": {"name": "IsA"}, "m": {"name": nodename}} for nodename in isa_res]
         entityRelation.extend(res)
 
         subclassof_res = self.search_subclassof(keyword)
-        res = [{"r": {"name": "IsA"}, "m": {"name", nodename}} for nodename in subclassof_res]
+        res = [{"r": {"name": "IsA"}, "m": {"name": nodename}} for nodename in subclassof_res]
         entityRelation.extend(res)
         
         prerequisite_res = self.search_prerequisite(keyword)
-        res = [{"r": {"name": "Prerequisite"}, "m": {"name", nodename}} for nodename in prerequisite_res]
+        res = [{"r": {"name": "Prerequisite"}, "m": {"name": nodename}} for nodename in prerequisite_res]
         entityRelation.extend(res)
 
         relatedto_res = self.search_relatedto(keyword)
-        res = [{"r": {"name": "RelatedTo"}, "m": {"name", nodename}} for nodename in relatedto_res]
+        res = [{"r": {"name": "RelatedTo"}, "m": {"name": nodename}} for nodename in relatedto_res]
         entityRelation.extend(res)
 
         return entityRelation
