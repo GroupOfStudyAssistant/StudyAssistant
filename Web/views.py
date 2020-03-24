@@ -65,17 +65,30 @@ def signin():
 
     return render_template('signin.html')
 
+# 这一部分还没有改太好
 def get_concepts(textforsearch):
-    dsl_concept = {
+    key = "_".join(x.lower() for x in textforsearch.split())
+    dsl_concept_1 = {
         'query': {
-            'multi_match': {
-                'query': textforsearch,
-                'fields': ['concept', 'definition']
-            }
+            'match': {'concept': key}
         }
     }
-    qresult_concept = es.search(index="conceptlist", body=dsl_concept)
+    qresult_concept = es.search(index="conceptlist", body=dsl_concept_1)
     concepts = qresult_concept["hits"]["hits"][0:min(3, len(qresult_concept["hits"]["hits"]))]
+    
+    """
+    if qresult_concept["hits"]["hits"][0]["concept"].lower != key:
+        dsl_concept_2 = {
+            'query': {
+                'multi_match': {
+                    'query': textforsearch,
+                    'fields': ['concept', 'definition']
+                }
+            }
+        }
+        qresult_concept = es.search(index="conceptlist", body=dsl_concept)
+        concepts = qresult_concept["hits"]["hits"][0:min(3, len(qresult_concept["hits"]["hits"]))]
+    """
     return concepts
 
 def get_relations(textforsearch):
