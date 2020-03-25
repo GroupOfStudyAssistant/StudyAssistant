@@ -161,13 +161,18 @@ class GraphSearch:
     def getAll(self, keyword):
         entityRelation = [] # 返回格式按照wangluo.html中的entityRelation的格式,(起始节点n)-[关系r]->(终止节点m)
         _keyword = self.reg(keyword)
-
-        isa_res = self.search_isa(_keyword)
-        res = [{"n": {"name": keyword}, "r": {"name": "IsA"}, "m": {"name": nodename.replace("_", " ")}} for nodename in isa_res]
-        entityRelation.extend(res)
+        
         be_isa_of_res = self.search_be_isa_of(_keyword) 
         res = [{"n": {"name": nodename.replace("_", " ")}, "r": {"name": "IsA"}, "m": {"name": keyword}} for nodename in be_isa_of_res]
         entityRelation.extend(res)
+        be_prerequisite_of_res = self.search_be_prerequisite_of(_keyword) 
+        res = [{"n": {"name": nodename.replace("_", " ")}, "r": {"name": "Prerequisite"}, "m": {"name": keyword}} for nodename in be_prerequisite_of_res]
+        entityRelation.extend(res)
+        
+        isa_res = self.search_isa(_keyword)
+        res = [{"n": {"name": keyword}, "r": {"name": "IsA"}, "m": {"name": nodename.replace("_", " ")}} for nodename in isa_res]
+        entityRelation.extend(res)
+
         """
         subclassof_res = self.search_subclassof(_keyword)
         res = [{"n": {"name": keyword}, "r": {"name": "SubclassOf"}, "m": {"name": nodename.replace("_", " ")}} for nodename in subclassof_res]
@@ -179,9 +184,7 @@ class GraphSearch:
         prerequisite_res = self.search_prerequisite(_keyword) 
         res = [{"n": {"name": keyword}, "r": {"name": "Prerequisite"}, "m": {"name": nodename.replace("_", " ")}} for nodename in prerequisite_res]
         entityRelation.extend(res)
-        be_prerequisite_of_res = self.search_be_prerequisite_of(_keyword) 
-        res = [{"n": {"name": nodename.replace("_", " ")}, "r": {"name": "Prerequisite"}, "m": {"name": keyword}} for nodename in be_prerequisite_of_res]
-        entityRelation.extend(res)
+        
         relatedto_res = self.search_relatedto(_keyword) 
         res = [{"n": {"name": keyword}, "r": {"name": "RelatedTo"}, "m": {"name": nodename.replace("_", " ")}} for nodename in relatedto_res]
         entityRelation.extend(res)

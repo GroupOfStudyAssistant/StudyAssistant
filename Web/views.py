@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from Web import app, db, es, graph
 from Web.models import User
+import json
 
 # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
 @app.route('/', methods=['GET', 'POST'])
@@ -93,7 +94,7 @@ def get_concepts(textforsearch):
 
 def get_relations(textforsearch):
     relations = graph.getAll(textforsearch)
-    return relations
+    return json.dumps(relations)
 
 def get_moocs(textforsearch):
     dsl_mooc = {

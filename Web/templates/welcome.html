@@ -4,10 +4,13 @@
   {{ super() }}
   <!-- 引入 ECharts 文件 -->
   <script src="https://cdn.bootcss.com/echarts/4.4.0-rc.1/echarts.min.js"></script>
+  <script src="{{ url_for('static', filename='relation.js') }}"></script>
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
 {% endblock head %}
 
 {% block content %}
-
+  
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
@@ -53,38 +56,183 @@
   {% if relations|length != 0 %} {# 搜索出来相关节点和关系的话，展示关系图 #}
   <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
   <div style="margin: 0 auto; border: 1px solid #ccc; padding-top: 30px;">
-    <div id="main" style="width: 1200px;height:400px;"></div>
+    <div id="main" style="width: 1200px;height:600px;"></div>
     <script type="text/javascript">
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById('main'));
-  
-      // 指定图表的配置项和数据
-      var option = {
-          title: {
-              text: 'ECharts Demo'
-          },
-          tooltip: {},
-          legend: {
-              data:['热度']
-          },
-          xAxis: {
-              data: ["情感计算","机器学习","深度学习","计算机视觉","自然语言处理","知识图谱"]
-          },
-          yAxis: {},
-          series: [{
-              name: '热度',
-              type: 'bar',
-              data: [5, 29, 36, 10, 10, 20]
-          }]
-      };
-  
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
+      var entityRelation = jQuery.parseJSON({{ relations|tojson|safe }});   
+        //console.log(entityRelation);
+
+        var maxDisPlayNode = 25;
+        var data = [];  // echarts中的节点数组
+        var links = [];  // echarts中边的数组
+        var node = {} ;
+        var t = 1;
+        var data2 = [];
+        var id = 0;
+
+
+        // 获取实体2, 存储在data中, 如果实体2已经存在于data中, 则不push
+          // 对展示节点的数量进行限制
+        // console.log("实体长度----->", entityRelation.length);  // 显示关系个数
+        for(var i = 0; i < Math.min(maxDisPlayNode, entityRelation.length); i++) {
+
+            var node1 = {};
+            var node2 = {};
+
+            node1["name"] = entityRelation[i]["n"]["name"];
+            node1["draggable"] = true;
+            id = i + 1;
+            var flag = 1;
+            t = 1;
+            relationTarget = id.toString();
+            
+            for (var j = 0; j < data.length; j++) {
+                if (data[j]["name"] === node1["name"]) {
+                    flag = 0;
+                    t = 0;
+                    relationTarget = data[j]["id"];
+                    break;
+                }
+            }
+            node1["id"] = relationTarget;
+            node1["symbolSize"] =15;
+
+            node2["name"] = entityRelation[i]["m"]["name"];
+            node2["draggable"] = true;
+
+            flag = 1;
+            relationTarget = id.toString();
+            for (var j = 0; j< data.length; j++){
+                if (data[j]["name"] === node2["name"]){
+                    flag = 0;
+                    relationTarget = data[j]["id"];
+                    break;
+                }
+            }
+            node2["id"] = relationTarget;
+            node2["symbolSize"] =15;
+            relation = {};
+            //relation["source"] = reg;  // 关系起点, 数字代表的是节点的id, 即node[id]
+            relation["target"] = node2["id"];  // 关系指向的终点, 也是id, 即通过节点的id描述两个节点以及关系
+            relation["category"] = 0;
+            relation["source"] = node1["id"];
+
+            if (flag === 1 ) { //node2相同
+                data.push(node2);
+                relation["value"] = entityRelation[i]["r"]["name"];
+                relation["symbolSize"] = 15;
+                links.push(relation);
+            }
+            else if (t == 1){ //node1相同
+                data.push(node1);
+                relation["value"] = entityRelation[i]["r"]["name"];
+                relation["symbolSize"] = 15;
+                links.push(relation);
+            }
+            else {
+                maxDisPlayNode += 1;
+                for (var k = 0; k < links.length; k++) {
+                    
+                    if (links[k]["target"] === relation["target"] &&links[k]["source"] === relation["source"] ) {
+                        relation["symbolSize"] = 15;
+                        links[k]["value"] =  entityRelation[i]["r"]["name"];
+                        break;
+                    }
+                }
+            }
+        }
+        // console.log("data====>>>", data);
+        // console.log("links====>>>", links);
+
+        // 初始化echarts实例
+        var myChart = echarts.init(document.getElementById("main"));
+
+        option = {
+            title: {
+                text: ""
+            },
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: "quinticInOut",
+            label: {
+                normal: {
+                    show: true,
+                    textStyle: {
+                        fontSize: 12
+                    },
+                }
+            },
+            legend: {
+                x: "center",
+                show: false
+            },
+            series: [
+
+                {
+                    type: "graph",
+                    layout: "force",
+                    symbolSize: 45,
+                    focusNodeAdjacency: false,  // 是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点, 默认是true
+                    roam: true,
+                    edgeSymbol: ["none", "arrow"],
+                  
+                    label: {
+                        normal: {
+                            show: true,
+                            textStyle: {
+                                fontSize: 12,
+                                fontStyle : "normal",
+                                fontWeight : "bolder",
+                                fontFamily : "sans-serif",
+                            },
+                        }
+                    },
+                    force: {
+                        repulsion: 1000,
+                        edgeLength: [150, 100],
+                        layoutAnimation : false
+                        // 因为力引导布局会在多次迭代后才会稳定, 这个参数决定是否显示布局的迭代动画(节点数量过多, 图在迭代的过程中会旋转),
+                        // 在浏览器端节点数据较多(>100)的时候不建议关闭, 布局过程会造成浏览器假死。
+                    },
+                    edgeSymbolSize: [4, 50],
+                    edgeLabel: {
+                        normal: {
+                            show: true,
+                            textStyle: {
+                                fontSize: 10
+                            },
+                            formatter: "{c}"   // 标签内容格式器。模板变量有 {a}、{b}、{c}，分别表示系列名，数据名，数据值。
+                        }
+                    },
+                    data: data,  // 节点
+                    links: links,  // 边或者关系
+                    lineStyle: {
+                        normal: {
+                            opacity: 0.5,
+                            width: 1.0,
+                            curveness: 0,
+                            color: "#262626"
+                        }
+                    }
+                }
+            ]
+        };
+        myChart.setOption(option);  // 这步很重要, 必须设置才可以有效
+        myChart.on("click", function (param){
+            console.log("param---->", param);  // 打印出param, 可以看到里边有很多参数可以使用
+            //获取节点点击的数组序号
+            var arrayIndex = param.dataIndex;
+            console.log("arrayIndex---->", arrayIndex);
+            console.log("name---->", param.name);
+            if (param.dataType == "node") {
+                alert("点击了节点" + param.name)
+            } else {
+                alert("点击了边" + param.value)
+            }
+        });
+   
     </script>
-  
   </div>
   {% endif %}
-  <p>{{ relations }}</p>
   <br>
 
   <h2 class="mb-5">资源合集</h2>
