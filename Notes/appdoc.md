@@ -150,19 +150,38 @@ xx.py     146      5    97%
 
 搜索功能的实现放在welcome路由. 具体方式为搜索框提交的内容发送到该路由, 函数内根据获取的文本进行搜索, 然后进行渲染. 
 
+## 20200310 实现查询知识点的功能
 
-20200313 粗略加了mooc查询部分  
+## 20200314 实现查询相关慕课的功能
+
+## 20200313 粗略加了mooc查询部分  
 待完善：
 1. 查询的精细化：添加权重等
 2. 普通数据库->ORM形式，这样才能比较优雅地“返回id，用id去数据库中查询，送至模板”。当前只是单纯返回全部数据。
 3. 更好的数据展示方式，如何跳转，如何折叠+readmore展开
 
 
-20200322 本周大家进展都比较慢
+## 20200322 本周大家进展都比较慢
 老师给的neo4j数据部分，参考师姐的论文：
 1. IsA关系：用Wibi_IsA + Wordnet_Hypernyms + WikiData_SubclassOf + WikiData_InstanceOf
 2. Prerequisite关系：来自Wikipedia links和MOOCs。通过计算特征、训练逻辑回归模型、计算得到任意两个概念之间是否有先修关系。模型是基于别人的wikipedia concept map dataset预训练的。
 3. RelatedTo关系：利用skip-gram和node2vec模型分别学习word embedding和network embedding，平均数作为最终embedding. embedding的相似度大于0.3并且有直接link则作为RelatedTo关系
 
 从师兄给的代码可以看出，prerequisite是neo4j中的KGBnu_Ref, RelatedTo是KGBnu_RelatedTo
+
+## 20200323 实现neo4j的查询功能
+neo4j 4.0版本需要java11，所以推荐下载[neo4j community edition 3.5.16版本](https://neo4j.com/download-center/#community)
+
+#### 启动neo4j服务器：
+在git bash中进入bin目录，执行`./neo4j.bat console`打开neo4j的控制台，可在http://localhost:7474/查看。 console命令之外，还有start:启动服务，stop：关闭，status：查看运行状态，install-service：安装neo4j在windows上的服务
+- 区别：service只要不stop，会随系统启动而自动启动，无需操作。而console需要运行命令才能启动，关闭则stop
+
+#### 导入师兄的数据：
+首先neo4j stop关闭服务
+接着neo4j-admin.bat load --from=E:/KGProject/2016-10-02.dump --database=graph.db --force导入
+重新开启服务即可使用
+
+## 20200325 实现echarts画图
+
+第一组数据的起始节点是查询节点时画图有错，待debug
 
