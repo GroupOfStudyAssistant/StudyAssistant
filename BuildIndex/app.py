@@ -105,7 +105,7 @@ class GraphSearch:
         return "_".join(x.lower() for x in query_str.split())
 
     # 匹配，返回节点数组
-    def graph_match(self, keyword, rel_type, head = True):
+    def graph_match(self, keyword, rel_type, head = True, limit = 2):
         result = []
         keyword = self.reg(keyword)
         start_node = "start"
@@ -114,41 +114,42 @@ class GraphSearch:
             start_node = "end"
             end_node = "start"
         gql = "MATCH (start:WikiConcept)-[rel:" + rel_type + "]->(end:WikiConcept) " \
-            "WHERE " + start_node + ".lowwer_label = \"" + keyword + "\" RETURN " + end_node
+            "WHERE " + start_node + ".lowwer_label = \"" + keyword + "\" RETURN " + end_node + " LIMIT " + str(limit)
         match_result = self.graph.run(gql).data()
         for item in match_result:
             label = item[end_node].get("lowwer_label")
-            result.append(label)
+            if label != keyword:
+                result.append(label)
         return result
 
-    def search_isa(self, keyword):
-        res1 = self.graph_match(keyword, "Wibi_IsA")
-        res2 = self.graph_match(keyword, "Wordnet_Hypernyms")
-        res3 = self.graph_match(keyword, "WikiData_InstanceOf")
-        res = list(set(res1 + res2 + res3)) # 合并，去重
-        return res
+    def search_isa(self, keyword, limit = 2):
+        res1 = self.graph_match(keyword, "Wibi_IsA", limit = limit)
+        #res2 = self.graph_match(keyword, "Wordnet_Hypernyms")
+        #res3 = self.graph_match(keyword, "WikiData_InstanceOf")
+        #res = list(set(res1 + res2 + res3)) # 合并，去重
+        return res1
 
-    def search_be_isa_of(self, keyword):
-        res1 = self.graph_match(keyword, "Wibi_IsA", head = False)
-        res2 = self.graph_match(keyword, "Wordnet_Hypernyms", head = False)
-        res3 = self.graph_match(keyword, "WikiData_InstanceOf", head = False)
-        res = list(set(res1 + res2 + res3)) # 合并，去重
-        return res
+    def search_be_isa_of(self, keyword, limit = 2):
+        res1 = self.graph_match(keyword, "Wibi_IsA", head = False, limit = limit)
+        #res2 = self.graph_match(keyword, "Wordnet_Hypernyms", head = False)
+        #res3 = self.graph_match(keyword, "WikiData_InstanceOf", head = False)
+        #res = list(set(res1 + res2 + res3)) # 合并，去重
+        return res1
 
-    def search_subclassof(self, keyword):
-        return self.graph_match(keyword, "WikiData_SubclassOf")
+    def search_subclassof(self, keyword, limit = 2):
+        return self.graph_match(keyword, "WikiData_SubclassOf", limit = limit)
 
-    def search_superclassof(self, keyword):
-        return self.graph_match(keyword, "WikiData_SubclassOf", head = False)
+    def search_superclassof(self, keyword, limit = 2):
+        return self.graph_match(keyword, "WikiData_SubclassOf", head = False, limit = limit)
 
-    def search_prerequisite(self, keyword):
-        return self.graph_match(keyword, "KGBnu_Ref")
+    def search_prerequisite(self, keyword, limit = 5):
+        return self.graph_match(keyword, "KGBnu_Ref", limit = limit)
 
-    def search_be_prerequisite_of(self, keyword):
-        return self.graph_match(keyword, "KGBnu_Ref", head = False)
+    def search_be_prerequisite_of(self, keyword, limit = 2):
+        return self.graph_match(keyword, "KGBnu_Ref", head = False, limit = limit)
 
-    def search_relatedto(self, keyword):
-        return self.graph_match( keyword, "KGBnu_RelatedTo")
+    def search_relatedto(self, keyword, limit = 5):
+        return self.graph_match( keyword, "KGBnu_RelatedTo", limit = limit)
 
     @staticmethod
     def pack(keyword, result, rel_type):
@@ -159,28 +160,30 @@ class GraphSearch:
 
     def getAll(self, keyword):
         entityRelation = [] # 返回格式按照wangluo.html中的entityRelation的格式,(起始节点n)-[关系r]->(终止节点m)
-        keyword = self.reg(keyword)
+        _keyword = self.reg(keyword)
 
-        isa_res = self.search_isa(keyword)
-        res = [{"n": {"name": keyword}, "r": {"name": "IsA"}, "m": {"name": nodename}} for nodename in isa_res]
+        isa_res = self.search_isa(_keyword)
+        res = [{"n": {"name": keyword}, "r": {"name": "IsA"}, "m": {"name": nodename.replace("_", " ")}} for nodename in isa_res]
         entityRelation.extend(res)
-        be_isa_of_res = self.search_be_isa_of(keyword) 
-        res = [{"n": {"name": nodename}, "r": {"name": "IsA"}, "m": {"name": keyword}} for nodename in be_isa_of_res]
+        be_isa_of_res = self.search_be_isa_of(_keyword) 
+        res = [{"n": {"name": nodename.replace("_", " ")}, "r": {"name": "IsA"}, "m": {"name": keyword}} for nodename in be_isa_of_res]
         entityRelation.extend(res)
-        subclassof_res = self.search_subclassof(keyword)
-        res = [{"n": {"name": keyword}, "r": {"name": "SubclassOf"}, "m": {"name": nodename}} for nodename in subclassof_res]
+        """
+        subclassof_res = self.search_subclassof(_keyword)
+        res = [{"n": {"name": keyword}, "r": {"name": "SubclassOf"}, "m": {"name": nodename.replace("_", " ")}} for nodename in subclassof_res]
         entityRelation.extend(res)
-        superclassof_res = self.search_superclassof(keyword) 
-        res = [{"n": {"name": nodename}, "r": {"name": "SubclassOf"}, "m": {"name": keyword}} for nodename in superclassof_res]
+        superclassof_res = self.search_superclassof(_keyword) 
+        res = [{"n": {"name": nodename.replace("_", " ")}, "r": {"name": "SubclassOf"}, "m": {"name": keyword}} for nodename in superclassof_res]
         entityRelation.extend(res)
-        prerequisite_res = self.search_prerequisite(keyword) 
-        res = [{"n": {"name": keyword}, "r": {"name": "Prerequisite"}, "m": {"name": nodename}} for nodename in prerequisite_res]
+        """
+        prerequisite_res = self.search_prerequisite(_keyword) 
+        res = [{"n": {"name": keyword}, "r": {"name": "Prerequisite"}, "m": {"name": nodename.replace("_", " ")}} for nodename in prerequisite_res]
         entityRelation.extend(res)
-        be_prerequisite_of_res = self.search_be_prerequisite_of(keyword) 
-        res = [{"n": {"name": nodename}, "r": {"name": "Prerequisite"}, "m": {"name": keyword}} for nodename in be_prerequisite_of_res]
+        be_prerequisite_of_res = self.search_be_prerequisite_of(_keyword) 
+        res = [{"n": {"name": nodename.replace("_", " ")}, "r": {"name": "Prerequisite"}, "m": {"name": keyword}} for nodename in be_prerequisite_of_res]
         entityRelation.extend(res)
-        relatedto_res = self.search_relatedto(keyword) 
-        res = [{"n": {"name": keyword}, "r": {"name": "RelatedTo"}, "m": {"name": nodename}} for nodename in relatedto_res]
+        relatedto_res = self.search_relatedto(_keyword) 
+        res = [{"n": {"name": keyword}, "r": {"name": "RelatedTo"}, "m": {"name": nodename.replace("_", " ")}} for nodename in relatedto_res]
         entityRelation.extend(res)
 
         return entityRelation
