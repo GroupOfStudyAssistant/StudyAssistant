@@ -182,7 +182,16 @@
 
         option = {
             title: {
-                text: ""
+                text: "Relation of "+ key_word,
+                x:'center',//水平安放位置，默认为'left'，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+                y: 'top',//垂直安放位置，默认为top，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）
+                padding : 25,//边距
+                textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                fontSize: 24,
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                color : "black",
+                },
             },
             tooltip: {},
             animationDurationUpdate: 1500,
@@ -196,8 +205,11 @@
                 }
             },
             legend: {
-                x: "center",
-                show: false
+                //x: "center",
+                orient: 'vertical',
+                left : "auto",
+                top: "90%",//修改距顶部的距离可调至两列
+                //padding:[780,0,0,1100],   //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
             },
             series: [
 
