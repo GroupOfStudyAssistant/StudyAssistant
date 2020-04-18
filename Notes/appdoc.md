@@ -32,6 +32,8 @@
 
 + 图数据库使用neo4j.
 
++ dbpedia
+
   
 
 ### 网站设计
@@ -86,6 +88,8 @@
 3. entityvideo: VID, EName, time，不可用（师姐遗留）
 4. uservideo: VID, lastlearn(日期时间)
 5. video: VID, VName, Course, Vurl，是Coursera上部分视频的记录，只涉及5门课内47个视频片段，大概是师姐遗留产物
+
+(补充)
 
 
 
