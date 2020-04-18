@@ -1,3 +1,12 @@
+# 20200418
+
+hwc:
+http://www.openkg.cn/dataset/cndbpedia
+dbpedia在我们项目中的应用是什么? 
+appdoc中的运行部分需要重点梳理.
+
+
+
 # 20200414
 
 本周樊雨萱和胡文博画出先修课程图，黄文诚看相关度计算/服务器
