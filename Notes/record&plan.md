@@ -5,6 +5,8 @@ http://www.openkg.cn/dataset/cndbpedia
 dbpedia在我们项目中的应用是什么? 
 appdoc中的运行部分需要重点梳理.
 
+我们的项目无法直接使用教程中的pythonanywhere来部署. 因为我们除了使用flask框架, 还使用了mysql, es, neo4j等后端服务, 这些服务在这个平台上无法/很难部署. 
+
 
 
 # 20200414
