@@ -1,10 +1,20 @@
+# 20200419
+
+关于相似度计算：
+给词->调用接口得到词的向量->求和/平均值/cat得到短语的向量->用余弦或其他方法计算相似度
+[一个预训练好的多语言词向量资源](https://fasttext.cc/docs/en/english-vectors.html)
+中文的可以用腾讯AI Lab发布的
+
+集中在人工智能领域。
+
+部署到服务器：把项目打包上传
+
 # 20200418
 
 hwc:
 http://www.openkg.cn/dataset/cndbpedia
 dbpedia在我们项目中的应用是什么? 
 appdoc中的运行部分需要重点梳理.
-
 
 
 # 20200414
