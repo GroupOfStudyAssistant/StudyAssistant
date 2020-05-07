@@ -32,7 +32,7 @@
 
 + 图数据库使用neo4j.
 
-+ dbpedia
++ dbpedia-spotlight用于从文本中提取概念
 
   
 
@@ -107,7 +107,7 @@
 
 + 20200313 粗略加了mooc查询部分  
 
-待完善：(hwc: 是否已经完善?)
+待完善：(hwc: 是否已经完善?)(还没)
 1. 查询的精细化：添加权重等
 2. 普通数据库->ORM形式，这样才能比较优雅地“返回id，用id去数据库中查询，送至模板”。当前只是单纯返回全部数据。
 3. 更好的数据展示方式，如何跳转，如何折叠+readmore展开
@@ -191,10 +191,9 @@ xx.py     146      5    97%
 
 ### 运行方法
 
-运行程序方法没变，仍是在StudyAssistant文件夹下，先`flask initdb`初始化数据库，再`flask forge`生成虚拟数据，最后`flask run`运行
-
-待补充(详细写出步骤.
-
+1. 进入elasticsearch安装文件夹的bin目录，执行`./elasticsearch.bat`开启服务
+2. 进入neo4j安装文件夹的bin目录，执行`./neo4j.bat console`开启服务
+3. 进入StudyAssistant文件夹，初次使用时先执行`flask initdb`初始化数据库，再`flask forge`生成虚拟数据，最后`flask run`运行；之后使用只需要执行`flask run`
 
 
 ## 使用手册
