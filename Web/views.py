@@ -129,7 +129,7 @@ def welcome():
         relations = get_relations(textforsearch)
         #print(relations)
         moocs = get_moocs(textforsearch)
-    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs)
+    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs, textforsearch = textforsearch)
 
 # 相当于使用一个路由完成登出的功能,比较浪费,最好用js做
 @app.route('/signout')
