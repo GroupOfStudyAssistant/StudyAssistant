@@ -73,21 +73,75 @@ def create_mooc(es):
     helpers.bulk(es, li)
     db.close()
 
+def create_course(es):
+    es.indices.delete(index='conceptlist', ignore=[400, 404]) 
+    es.indices.create(index='conceptlist', ignore=400)
+
+    li = []
+    print("loading data from mysql...")
+    pdformysql = "123456" # 数据库密码
+    dbname = "all_course" # 数据库名称
+    db = pymysql.connect("localhost", "root", pdformysql, dbname)
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM COURSES")
+    data = cursor.fetchall()
+
+    i = 0
+    for d in data:
+        i += 1
+        action = {
+            "_index": "uni_course",
+            "_type": "course",
+            "_source": {
+                "id": d[0],
+                "name": d[1],
+                "url": d[2],
+                "school": d[3],
+                "instructor": d[4],
+                "descript": d[5],
+                "topics": d[6],
+                "prerequisites": d[7],
+                "related_course": d[8],
+                "related_course_link": d[9],
+                "reference_name": d[10],
+                "reference_link": d[11],
+                "bianhao": d[12],
+                "prereq_name": d[13],
+                "children": d[14]
+            }
+        }
+        li.append(action)
+        if i % 1000 == 0:
+            print("Successfully adding data: %d ~ %d..." % (i - 999, i))
+            # 批量插入数据到es
+            helpers.bulk(es, li)
+            li = []
+            #time.sleep(1)
+    helpers.bulk(es, li)
+
+    db.close()
+
+
 def init_es():
     es = Elasticsearch()
+    """
+    分别将concept, mooc, 我们的course放入es.运行过的再运行可能会重复
+    下面的es.search代码是用来验证是否插入成功的
+    """
     # create_concept(es)
-    create_mooc(es)
-    print("begin query, see if create_mooc() is succussful...")
+    # create_mooc(es)
+    create_course(es) # 20200509 用于把all_course导入es
+    print("begin query, see if create_course() is succussful...")
     dsl = {
         # '_source': {"id"}
         'query': {
             'multi_match': {
-                'query':'programming',
-                'fields': ['name', 'blackboard']
+                'query':'machine learning',
+                'fields': ['name','descript']
             }
         }
     }
-    result = es.search(index='mooc', body=dsl)
+    result = es.search(index='uni_course', body=dsl)
     print(result)
 
 class GraphSearch:
@@ -196,5 +250,8 @@ def init_neo4j():
 
 
 if __name__ == "__main__":
-    # init_es()
-    init_neo4j()
+    """
+    在服务器上初始化时两者都应取消注释
+    """
+    init_es()
+    # init_neo4j()

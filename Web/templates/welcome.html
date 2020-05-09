@@ -40,16 +40,11 @@
   <!-- Testimonials -->
   <section class="testimonials bg-light">
     <div class="container">
-      {% if concepts|length == 1 %} {# 无用户提交时用默认数据 #}
-        <h2 class="mb-5">{{ concepts[0]["concept"] }}</h2>
-        <p>{{ concepts[0]["definition"] }}</p>
-      {% else %}
         <h3> Results: </h3><br>
         {% for concept in concepts %}
         <h2 class="mb-5">{{ concept["_source"]["concept"]|replace("_", " ") }}</h2>
         <p>{{ concept["_source"]["definition"] }}</p><br>
         {% endfor %}
-      {% endif %}
       <br>
       <h2 class="mb-5">相关概念</h2>
     
@@ -329,6 +324,13 @@
   </div>
   {% endif %}
   <br>
+
+  <h2 class="mb-5">推荐学习路径</h2>
+  {% if prereqs["_source"]|length != 0 %}
+    <p>{{prereqs["_source"]}}</p>
+  {% else %}
+    <p>暂时没有推荐的学习路径，请修改查询词后重新尝试</p>
+  {% endif %}
 
   <h2 class="mb-5">资源合集</h2>
   <div>

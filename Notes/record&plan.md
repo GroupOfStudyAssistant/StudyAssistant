@@ -1,3 +1,13 @@
+# 20200509
+
+完成了：把所有抓取的信息导入到同一张表格，该表导入es;将children信息传递至html
+作先修关系图从uni_course中选课程（目前是最多用到name和descript字段），画图（目前是把查出来的第一门课传到html中）
+小胡可以用{{prereqs}}变量的["_source"]["children"]信息绘图了。
+
+使用方法：
+1. 新建数据库all_course,将sql文件"20200509all_course.courses.sql"导入。
+2. 运行/BuildIndex/app.py将mysql中的sql导入es,注意init_neo4j()关闭，init_es()中只有create_course()不被注释
+
 # 20200421
 
 本周：完成课程先修关系的展示
