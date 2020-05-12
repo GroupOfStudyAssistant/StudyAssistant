@@ -137,6 +137,8 @@ def get_prereqs(textforsearch):
             course = qresult_course["hits"]["hits"][0]# 暂时取第一个作为展示的结果图，后续可以筛选。
         else:
             course = {"_source": {}}
+    with open('E:/KGProject/StudyAssistant/Web/resources/result.json', 'w') as f: # 需替换成自己的路径
+        json.dump(course["_source"]["children"], f) # 读取时使用json.load(f)
     return course
 
 #展示

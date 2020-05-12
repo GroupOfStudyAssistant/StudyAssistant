@@ -328,6 +328,90 @@
   <h2 class="mb-5">推荐学习路径</h2>
   {% if prereqs["_source"]|length != 0 %}
     <p>{{prereqs["_source"]}}</p>
+    <br>
+    <p>a graph:</p>
+    <div id="container" style="height: 800px"></div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js" ></script>
+    <script type="text/javascript">
+         var dom = document.getElementById("container");
+         var myChart = echarts.init(dom);
+         var app = {};
+         option = null;
+
+         var option = {
+             tooltip: {
+                 trigger: 'item',
+                 triggerOn: 'mousemove'
+             },
+             series:[
+                 {
+                     type: 'tree',
+                     id: 0,
+                     name: 'tree1',
+                     data: [],
+                     edgeSymbol: ['none', 'arrow'],
+
+
+                     top: '10%',
+                     left: '15%',
+                     bottom: '22%',
+                     right: '10%',
+
+                     symbolSize: 7,
+
+                     edgeShape: 'polyline',
+                     edgeForkPosition: '63%',
+                     initialTreeDepth: 3,
+
+                     lineStyle: {
+                         width: 1.0,
+                     
+                         color: "#262626"
+              
+                     },
+
+                     label: {
+                         backgroundColor: 'azure',
+                         position: 'left',
+                         verticalAlign: 'middle',
+                         align: 'right'
+                     },
+
+                     leaves: {
+                         label: {
+                             position: 'right',
+                             verticalAlign: 'middle',
+                             align: 'left'
+                         }
+                     },
+                     roam: true,
+                     expandAndCollapse: true,
+                     animationDuration: 550,
+                     animationDurationUpdate: 750
+                 }
+             ]
+         }
+     
+         if (option && typeof option === "object") {
+             myChart.setOption(option, true);
+         }
+         console.log("dda");
+     $.get('http://localhost:5000/static/data.json').done(function (data) {//此处是json文件的路径
+         console.log(data);
+         myChart.setOption({
+             series: [{
+         // 根据名字对应到相应的系列
+             name: 'tree1',
+             data: data
+             }]
+         });
+     });
+    </script>
   {% else %}
     <p>暂时没有推荐的学习路径，请修改查询词后重新尝试</p>
   {% endif %}
