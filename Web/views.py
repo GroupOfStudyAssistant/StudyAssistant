@@ -146,13 +146,16 @@ def get_prereqs(textforsearch):
 @login_required
 def welcome():
     # 没有搜索动作时的页面展示
-    textforsearch = ""
+    textforsearch = request.args.get('search', '') #获取查询参数search的值, 默认为空
     concepts = [{'_source': {'concept': '机器学习', 'definition': '''机器学习是一门多领域交叉学科，涉及概率论、统计学、逼近论、凸分析、算法复杂度理论等多门学科。
         专门研究计算机怎样模拟或实现人类的学习行为，以获取新的知识或技能，重新组织已有的知识结构使之不断改善自身的性能。
         它是人工智能的核心，是使计算机具有智能的根本途径。'''}}]
     relations = []
     moocs = []
     prereqs = {"_source": {}}
+    if textforsearch != '':
+        # 进行查询等处理.可写成一个函数.
+        print("get text: "+textforsearch)
     if request.method == 'POST': #post方法说明用户提交了查询
         textforsearch = request.form.get("keywords")
         if not textforsearch:
