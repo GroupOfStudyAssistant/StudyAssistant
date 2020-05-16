@@ -309,17 +309,15 @@
             ]
         };
         myChart.setOption(option);  // 这步很重要, 必须设置才可以有效
-        myChart.on("click", function (param){
+        myChart.on("mouseup", function (param){
             console.log("param---->", param);  // 打印出param, 可以看到里边有很多参数可以使用
             //获取节点点击的数组序号
             var arrayIndex = param.dataIndex;
             console.log("arrayIndex---->", arrayIndex);
             console.log("name---->", param.name);
-            if (param.dataType == "node") {
-                alert("点击了节点" + param.name)
-            } else {
-                alert("点击了边" + param.value)
-            }
+            var option = myChart.getOption();
+            option.series[0].node[params.dataIndex].fixed=true;
+            myChart.setOption(option);
         });
    
     </script>
