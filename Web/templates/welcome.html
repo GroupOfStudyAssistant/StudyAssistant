@@ -51,7 +51,7 @@
   {% if relations|length != 0 %} {# 搜索出来相关节点和关系的话，展示关系图 #}
   <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
   <div style="margin: 0 auto; border: 1px solid #ccc; padding-top: 30px;">
-    <div id="main" style="width: 1200px;height:600px;"></div>
+    <div id="main" style="width: 90%;height:30%;"></div>
     <script type="text/javascript">
       var entityRelation = jQuery.parseJSON({{ relations|tojson|safe }});   
         //console.log(entityRelation);
@@ -178,6 +178,7 @@
 
         option = {
             title: {
+                center: ['55%', '60%'],
                 text: "Relation of "+ key_word,
                 x:'center',//水平安放位置，默认为'left'，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
                 y: 'top',//垂直安放位置，默认为top，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）
@@ -210,6 +211,7 @@
             series: [
 
                 {
+                    center: ['55%', '60%'],
                     type: "graph",
                     layout: "force",
                     symbolSize: 30, // 全局默认大小(中心节点)
@@ -330,7 +332,7 @@
     <p>{{prereqs["_source"]}}</p>
     <br>
     <p>a graph:</p>
-    <div id="container" style="height: 800px"></div>
+    <div id="container" style="height: 800px; margin: 0 auto; border: 1px solid #ccc; padding-top: 30px;"></div>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
@@ -344,12 +346,26 @@
          option = null;
 
          var option = {
+            title: {
+                center: ['55%', '60%'],
+                text: "Advanced Courses of "+ key_word,
+                x:'center',//水平安放位置，默认为'left'，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+                y: 'top',//垂直安放位置，默认为top，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）
+                padding : 25,//边距
+                textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                fontSize: 24,
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                color : "black",
+                },
+             },
              tooltip: {
                  trigger: 'item',
                  triggerOn: 'mousemove'
              },
              series:[
                  {
+                     center: ['55%', '60%'],
                      type: 'tree',
                      id: 0,
                      name: 'tree1',
@@ -412,6 +428,10 @@
          });
      });
     </script>
+    <br>
+    <a>These courses are from MIT,click</a>
+    <a href="https://ocw.mit.edu/courses/mit-curriculum-guide/" target="_blank">  here</a>
+    <a> to learn more about them!</a>
   {% else %}
     <p>暂时没有推荐的学习路径，请修改查询词后重新尝试</p>
   {% endif %}
