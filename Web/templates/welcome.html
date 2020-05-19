@@ -80,26 +80,26 @@
             var node1 = {};
             var node2 = {};
 
-            if(entityRelation[i]['r']['name'] == 'RelatedTo') {
+            if(((entityRelation[i]||{}).r||{}).name == 'RelatedTo') {
                 if(entityRelation[i]['n']['name'] == key_word){
                     node2['category'] = 1;
                 } else {
                     node1['category'] = 1;
                 }
                   
-            } else if (entityRelation[i]['r']['name'] == 'IsA') {
+            } else if (((entityRelation[i]||{}).r||{}).name== 'IsA') {
                 if(entityRelation[i]['n']['name'] == key_word){
                     node2['category'] = 2;
                 } else {
                     node1['category'] = 2;
                 }
-            } else if (entityRelation[i]['r']['name'] == 'Prerequisite') {
+            } else if (((entityRelation[i]||{}).r||{}).name == 'Prerequisite') {
                 if(entityRelation[i]['n']['name']  == key_word){
                     node2['category'] = 3;
                 } else {
                     node1['category'] = 3;
                 }
-            } else if (entityRelation[i]['r']['name'] == 'SubclassOf') {
+            } else if (((entityRelation[i]||{}).r||{}).name== 'SubclassOf') {
                 if(entityRelation[i]['n']['name']  == key_word){
                     node2['category'] = 4;
                 } else {
@@ -110,7 +110,7 @@
                 node1['category'] = 5;
             }
 
-            node1["name"] = entityRelation[i]["n"]["name"];
+            node1["name"] = ((entityRelation[i]||{}).n||{}).name;
             node1["draggable"] = true;
             id = i + 1;
             var flag = 1;
@@ -128,7 +128,7 @@
             node1["id"] = relationTarget;
             node1["symbolSize"] = 20;
 
-            node2["name"] = entityRelation[i]["m"]["name"];
+            node2["name"] = ((entityRelation[i]||{}).m||{}).name;
             node2["draggable"] = true;
 
             flag = 1;
@@ -148,7 +148,7 @@
             relation["target"] = node2["id"];  // 关系指向的终点, 也是id, 即通过节点的id描述两个节点以及关系
             relation["category"] = 0;
             relation["source"] = node1["id"];
-            relation["value"] = entityRelation[i]["r"]["name"];
+            relation["value"] = ((entityRelation[i]||{}).r||{}).name;
             relation["symbolSize"] = 20;
             links.push(relation);
 
@@ -164,7 +164,7 @@
                     
                     if (links[k]["target"] === relation["target"] &&links[k]["source"] === relation["source"] ) {
                         relation["symbolSize"] = 20;
-                        links[k]["value"] =  entityRelation[i]["r"]["name"];
+                        links[k]["value"] = ((entityRelation[i]||{}).r||{}).name;
                         break;
                     }
                 }
