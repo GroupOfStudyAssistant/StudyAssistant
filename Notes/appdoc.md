@@ -248,6 +248,8 @@ xx.py     146      5    97%
 
 Flask的运行需要Python3, 所以最好在项目文件夹下建立相应虚拟环境, 安装flask模块, 不同平台有相应的配置办法. 在配置好flask后将源代码放入项目根目录, 就配置好了flask的调试环境. 
 
+对于本项目的测试, 需要在初次运行之前, 使用 `flask initdb` 和 `flask forge`  初始化用户数据库和用户数据. 在本项目中测试用户的数据使用SQLite数据库存储, 因此其形式仅仅是Web根目录下的一个db文件.
+
 + ES
 
 概念解释功能用到了ES. 需要配置ES环境. Win10系统下有压缩包, 无需安装. 如果希望可视化使用ES, 需要安装kibana, 配置方法类似, 将会给出可访问的地址:端口号.
@@ -292,19 +294,21 @@ neo4j-admin.bat  dump --database=graph.db --to=<path>/<dump文件>
 
 配置mysql环境. Win10系统下可以使用安装包安装, 安装完成后可随时开启/关闭服务. Debian/RedHat暂时没有了解. (这个好像与运行无关?)数据库迁移使用导入导出功能.
 
+ES里的数据包括老师给的资源中的concept和mooc, 以及我们收集的course数据. 但这些数据有一个从关系型数据库到ES索引的过程, 所以如果无法直接从ES导出, 就需要用关系型数据库去再次处理.
+
+neo4j是管理图数据库的工具, 本项目中只用到了师兄给的一个数据文件, 导入即可. neo4j不支持模糊的搜索, 只有查询功能, 所以属于精确匹配, 有待改进. 
+
 
 
 #### 运行
 
 1. 进入elasticsearch安装文件夹的bin目录，执行`./elasticsearch.bat`开启服务.
-2. 进入neo4j安装文件夹的bin目录，执行`./neo4j.bat console` 开启服务.
-3. 进入StudyAssistant文件夹，初次使用时先执行`flask initdb`初始化数据库，再`flask forge`生成虚拟数据，最后`flask run`运行；之后使用只需要执行`flask run`.
+2. 进入neo4j安装文件夹的bin目录，执行`./neo4j.bat start` 开启服务.
+3. 进入StudyAssistant文件夹，执行`flask run`开启web应用.
+
+### 部署
 
 
-
-ES里的数据包括老师给的资源中的concept和mooc, 以及我们收集的course数据. 但这些数据有一个从关系型数据库到ES索引的过程, 所以如果无法直接从ES导出, 就需要用关系型数据库去再次处理.
-
-neo4j是管理图数据库的工具, 本项目中只用到了师兄给的一个数据文件, 导入即可. neo4j不支持模糊的搜索, 只有查询功能, 所以属于精确匹配, 有待改进. 
 
 
 
