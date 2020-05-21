@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from Web import app, db, es, graph
 from Web.models import User
+# from BuildIndex.app import vec
 import pymysql, json
 
 # 该路由仅用于展示,完成跳转到登录界面和注册界面的功能
@@ -96,8 +97,15 @@ def get_concepts(textforsearch):
     return concepts
 
 def get_relations(textforsearch):
+    """
+    对第一张图，getAll和getBFSPre一起用
+    前者是最初始的，后者是只对先修关系的BFD遍历，中间有重合的，需去重
+    """
     relations = graph.getAll(textforsearch)
-    return json.dumps(relations)
+    prereqs_bfs = graph.getBFSPre(textforsearch)
+    print(prereqs_bfs)
+    relations.extend(prereqs_bfs)
+    return json.dumps(relations), json.dumps(prereqs_bfs)
 
 def get_moocs(textforsearch):
     dsl_mooc = {
@@ -137,8 +145,12 @@ def get_prereqs(textforsearch):
             course = qresult_course["hits"]["hits"][0]# 暂时取第一个作为展示的结果图，后续可以筛选。
         else:
             course = {"_source": {}}
-    with open('E:/KGProject/StudyAssistant/Web/resources/result.json', 'w') as f: # 需替换成自己的路径
-        json.dump(course["_source"]["children"], f) # 读取时使用json.load(f)
+    with open('E:/KGProject/StudyAssistant/Web/static/data.json', 'w') as f: # 需替换成自己的路径
+        if course != {"_source": {}}:
+            f.write("["+str(course["_source"]["children"].replace("'", "\""))+"]")
+            # json.dump(course["_source"]["children"], f) # 读取时使用json.load(f)
+        else:
+            json.dump("[]", f)
     return course
 
 #展示
@@ -153,19 +165,24 @@ def welcome():
     relations = []
     moocs = []
     prereqs = {"_source": {}}
-    if textforsearch != '':
+    if textforsearch != '':   # 这里还未尝试，url格式是什么样的？
         # 进行查询等处理.可写成一个函数.
-        print("get text: "+textforsearch)
-    if request.method == 'POST': #post方法说明用户提交了查询
-        textforsearch = request.form.get("keywords")
-        if not textforsearch:
-            return redirect(url_for('welcome'))
         concepts = get_concepts(textforsearch)
         relations = get_relations(textforsearch)
         #print(relations)
         moocs = get_moocs(textforsearch)
         prereqs = get_prereqs(textforsearch) # 得到的是我们认为和搜索词最接近的uni_course的数据
-    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs, textforsearch = textforsearch, prereqs = prereqs)
+        #print("get text: "+textforsearch)
+    if request.method == 'POST': #post方法说明用户提交了查询
+        textforsearch = request.form.get("keywords")
+        if not textforsearch:
+            return redirect(url_for('welcome'))
+        concepts = get_concepts(textforsearch)
+        relations, bbb = get_relations(textforsearch)
+        #print(relations)
+        moocs = get_moocs(textforsearch)
+        prereqs = get_prereqs(textforsearch) # 得到的是我们认为和搜索词最接近的uni_course的数据
+    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs, textforsearch = textforsearch, prereqs = prereqs, bbb = bbb)
 
 # 相当于使用一个路由完成登出的功能,比较浪费,最好用js做
 @app.route('/signout')
