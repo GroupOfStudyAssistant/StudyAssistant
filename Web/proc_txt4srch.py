@@ -36,9 +36,15 @@ def get_concepts(textforsearch):
 
 # 获取概念图谱(需要改进模糊搜索)
 def get_relations(textforsearch):
+    """
+    对第一张图，getAll和getBFSPre一起用
+    前者是最初始的，后者是只对先修关系的BFD遍历，中间有重合的，需去重
+    """
     relations = graph.getAll(textforsearch)
-    return json.dumps(relations)
-
+    prereqs_bfs = graph.getBFSPre(textforsearch)
+    print(prereqs_bfs)
+    relations.extend(prereqs_bfs)
+    return json.dumps(relations), json.dumps(prereqs_bfs)
 
 # 使用ES搜索课程
 def get_moocs(textforsearch):
@@ -83,6 +89,9 @@ def get_prereqs(textforsearch):
             course = {"_source": {}}
 
     with open(os.path.join(os.path.dirname(app.root_path), 'resources/result.json') , 'w') as f:
-        json.dump(course["_source"]["children"], f) # 读取时使用json.load(f)
+        if course != {"_source": {}}:
+            f.write("["+str(course["_source"]["children"].replace("'", "\""))+"]")
+            # json.dump(course["_source"]["children"], f) # 读取时使用json.load(f)
+        else:
+            json.dump("[]", f)
     return course
-    

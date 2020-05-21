@@ -5,6 +5,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from Web import app, db
 from Web.models import User
+# from BuildIndex.app import vec
 import pymysql, json
 
 
@@ -82,7 +83,6 @@ def signout():
 
 
 
-
 ######## 核心功能
 from Web.proc_txt4srch import get_concepts,get_relations,get_moocs,get_prereqs
 #搜索页
@@ -103,10 +103,10 @@ def welcome():
 
     if textforsearch.strip(): # 如果不是是空白字符才进行检索处理
         concepts = get_concepts(textforsearch)
-        relations = get_relations(textforsearch)
+        relations, bbb = get_relations(textforsearch)
         #print(relations)
         moocs = get_moocs(textforsearch)
         prereqs = get_prereqs(textforsearch) # 得到的是我们认为和搜索词最接近的uni_course的数据
 
-    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs, textforsearch = textforsearch, prereqs = prereqs)
+    return render_template('welcome.html', concepts = concepts, relations = relations, moocs = moocs, textforsearch = textforsearch, prereqs = prereqs,bbb = bbb)
 

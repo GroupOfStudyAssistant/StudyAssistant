@@ -4,7 +4,6 @@
   {{ super() }}
   <!-- 引入 ECharts 文件 -->
   <script src="https://cdn.bootcss.com/echarts/4.4.0-rc.1/echarts.min.js"></script>
-  <script src="{{ url_for('static', filename='relation.js') }}"></script>
   <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 
 {% endblock head %}
@@ -48,6 +47,10 @@
       <br>
       <h2 class="mb-5">相关概念</h2>
     
+      <p>RELATIONS:</p>
+      <p>{{relations}}</p>
+      <p>BBB:</p>
+      <p>{{bbb}}</p>
   {% if relations|length != 0 %} {# 搜索出来相关节点和关系的话，展示关系图 #}
   <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
   <div style="margin: 0 auto; border: 1px solid #ccc; padding-top: 30px;">
@@ -468,6 +471,7 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="moocs">
         moocs...
+        <p>{{moocs}}</p>
         <p>Here are some mooc resources recommended for you:</p>
         {% if moocs|length != 0 %}
         <ol>
