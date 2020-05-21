@@ -95,6 +95,7 @@ def welcome():
     relations = []
     moocs = []
     prereqs = {"_source": {}}
+    bbb= []
 
     if request.method == 'POST':  # POST请求表示提交表单
         textforsearch = request.form.get("keywords")
