@@ -1,4 +1,4 @@
-# flask自定义命令列表
+# 自定义flask命令清单
 import click
 
 from Web import app, db
