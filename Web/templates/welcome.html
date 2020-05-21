@@ -54,7 +54,7 @@
   {% if relations|length != 0 %} {# 搜索出来相关节点和关系的话，展示关系图 #}
   <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
   <div style="margin: 0 auto; border: 1px solid #ccc; padding-top: 30px;">
-    <div id="main" style="width: 1200px;height:600px;"></div>
+    <div id="main" style="width: 90%;height:30%;"></div>
     <script type="text/javascript">
       var entityRelation = jQuery.parseJSON({{ relations|tojson|safe }});   
         //console.log(entityRelation);
@@ -83,26 +83,26 @@
             var node1 = {};
             var node2 = {};
 
-            if(entityRelation[i]['r']['name'] == 'RelatedTo') {
+            if(((entityRelation[i]||{}).r||{}).name == 'RelatedTo') {
                 if(entityRelation[i]['n']['name'] == key_word){
                     node2['category'] = 1;
                 } else {
                     node1['category'] = 1;
                 }
                   
-            } else if (entityRelation[i]['r']['name'] == 'IsA') {
+            } else if (((entityRelation[i]||{}).r||{}).name== 'IsA') {
                 if(entityRelation[i]['n']['name'] == key_word){
                     node2['category'] = 2;
                 } else {
                     node1['category'] = 2;
                 }
-            } else if (entityRelation[i]['r']['name'] == 'Prerequisite') {
+            } else if (((entityRelation[i]||{}).r||{}).name == 'Prerequisite') {
                 if(entityRelation[i]['n']['name']  == key_word){
                     node2['category'] = 3;
                 } else {
                     node1['category'] = 3;
                 }
-            } else if (entityRelation[i]['r']['name'] == 'SubclassOf') {
+            } else if (((entityRelation[i]||{}).r||{}).name== 'SubclassOf') {
                 if(entityRelation[i]['n']['name']  == key_word){
                     node2['category'] = 4;
                 } else {
@@ -113,7 +113,7 @@
                 node1['category'] = 5;
             }
 
-            node1["name"] = entityRelation[i]["n"]["name"];
+            node1["name"] = ((entityRelation[i]||{}).n||{}).name;
             node1["draggable"] = true;
             id = i + 1;
             var flag = 1;
@@ -131,7 +131,7 @@
             node1["id"] = relationTarget;
             node1["symbolSize"] = 20;
 
-            node2["name"] = entityRelation[i]["m"]["name"];
+            node2["name"] = ((entityRelation[i]||{}).m||{}).name;
             node2["draggable"] = true;
 
             flag = 1;
@@ -151,7 +151,7 @@
             relation["target"] = node2["id"];  // 关系指向的终点, 也是id, 即通过节点的id描述两个节点以及关系
             relation["category"] = 0;
             relation["source"] = node1["id"];
-            relation["value"] = entityRelation[i]["r"]["name"];
+            relation["value"] = ((entityRelation[i]||{}).r||{}).name;
             relation["symbolSize"] = 20;
             links.push(relation);
 
@@ -167,7 +167,7 @@
                     
                     if (links[k]["target"] === relation["target"] &&links[k]["source"] === relation["source"] ) {
                         relation["symbolSize"] = 20;
-                        links[k]["value"] =  entityRelation[i]["r"]["name"];
+                        links[k]["value"] = ((entityRelation[i]||{}).r||{}).name;
                         break;
                     }
                 }
@@ -181,6 +181,7 @@
 
         option = {
             title: {
+                center: ['55%', '60%'],
                 text: "Relation of "+ key_word,
                 x:'center',//水平安放位置，默认为'left'，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
                 y: 'top',//垂直安放位置，默认为top，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）
@@ -213,6 +214,7 @@
             series: [
 
                 {
+                    center: ['55%', '60%'],
                     type: "graph",
                     layout: "force",
                     symbolSize: 30, // 全局默认大小(中心节点)
@@ -310,17 +312,15 @@
             ]
         };
         myChart.setOption(option);  // 这步很重要, 必须设置才可以有效
-        myChart.on("click", function (param){
+        myChart.on("mouseup", function (param){
             console.log("param---->", param);  // 打印出param, 可以看到里边有很多参数可以使用
             //获取节点点击的数组序号
             var arrayIndex = param.dataIndex;
             console.log("arrayIndex---->", arrayIndex);
             console.log("name---->", param.name);
-            if (param.dataType == "node") {
-                alert("点击了节点" + param.name)
-            } else {
-                alert("点击了边" + param.value)
-            }
+            var option = myChart.getOption();
+            option.series[0].node[params.dataIndex].fixed=true;
+            myChart.setOption(option);
         });
    
     </script>
@@ -333,7 +333,7 @@
     <p>{{prereqs["_source"]}}</p>
     <br>
     <p>a graph:</p>
-    <div id="container" style="height: 800px"></div>
+    <div id="container" style="height: 800px; margin: 0 auto; border: 1px solid #ccc; padding-top: 30px;"></div>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
@@ -347,12 +347,26 @@
          option = null;
 
          var option = {
+            title: {
+                center: ['55%', '60%'],
+                text: "Advanced Courses of "+ key_word,
+                x:'center',//水平安放位置，默认为'left'，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+                y: 'top',//垂直安放位置，默认为top，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）
+                padding : 25,//边距
+                textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+                fontSize: 24,
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                color : "black",
+                },
+             },
              tooltip: {
                  trigger: 'item',
                  triggerOn: 'mousemove'
              },
              series:[
                  {
+                     center: ['55%', '60%'],
                      type: 'tree',
                      id: 0,
                      name: 'tree1',
@@ -415,6 +429,10 @@
          });
      });
     </script>
+    <br>
+    <a>These courses are from MIT,click</a>
+    <a href="https://ocw.mit.edu/courses/mit-curriculum-guide/" target="_blank">  here</a>
+    <a> to learn more about them!</a>
   {% else %}
     <p>暂时没有推荐的学习路径，请修改查询词后重新尝试</p>
   {% endif %}

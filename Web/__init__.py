@@ -7,16 +7,18 @@ from flask_login import LoginManager
 from elasticsearch import Elasticsearch
 from BuildIndex.app import GraphSearch
 
-#应用设置
+# 应用设置
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'\
     + os.path.join(os.path.dirname(app.root_path), 'data.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的监控(暂时不知道用途)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的监控, 否则太多警告信息
+
 # 拓展类
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'signin' #未登录视图保护的重定向端点
+
 # ES实例
 es = Elasticsearch()
 # Neo4j实例
