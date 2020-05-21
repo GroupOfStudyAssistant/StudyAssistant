@@ -355,9 +355,6 @@ class GraphSearch:
 
         return entityRelation
 
-def init_neo4j():
-    graph = GraphSearch()
-
 """
 # 词向量数据，读取需要10分钟
 print("start loading word vectors, may takes 10 minutes...")
@@ -370,4 +367,3 @@ if __name__ == "__main__":
     import本文件时init_es()代码不会被执行
     """
     # init_es()
-    init_neo4j() # 其实没用，__init__.py中引用的是类而非实例
