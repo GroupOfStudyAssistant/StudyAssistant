@@ -270,7 +270,7 @@ ES数据的导入是用python脚本将MySQL中的数据取出并插入得到的.
 
 概念网状图功能用到了neo4j, 需要配置环境. Win10下有压缩包, 解压到需要的位置. 对于windows, 首次运行需要安装服务, 在bin目录下执行 `./neo4j.bat install-service`  即可.
 
-neo4j作为一种服务存在, 服务如果不关闭, 会随系统启动而开启(如果使用powershell, 可以使用neo4j.psl文件):
+neo4j作为一种服务存在, 服务如果不关闭, 会随系统启动而开启(如果使用powershell, 可以使用neo4j.ps1文件):
 
 ```
 ./neo4j.bat start #开启服务
