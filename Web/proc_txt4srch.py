@@ -1,5 +1,6 @@
 # 存放处理搜索词的函数
-import os 
+import os
+import pymysql, json
 
 from Web import app, es, graph
 
@@ -88,7 +89,7 @@ def get_prereqs(textforsearch):
         else:
             course = {"_source": {}}
 
-    with open(os.path.join(os.path.dirname(app.root_path), 'resources/result.json') , 'w') as f:
+    with open(os.path.join(os.path.dirname(app.root_path), 'Web\\static\\data.json') , 'w') as f:
         if course != {"_source": {}}:
             f.write("["+str(course["_source"]["children"].replace("'", "\""))+"]")
             # json.dump(course["_source"]["children"], f) # 读取时使用json.load(f)

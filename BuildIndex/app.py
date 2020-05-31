@@ -285,22 +285,25 @@ class GraphSearch:
             return None # 什么都不做。
         if pre:
             prerequisite_res = self.search_prerequisite(keyword, limit = 1000000) # 向前扩展, 返回名字的list
+            print("pre=", prerequisite_res)
         else:
             prerequisite_res = self.search_be_prerequisite_of(keyword,  limit = 1000000) # 向后扩展
+            print("after=", prerequisite_res)
         if prerequisite_res is not None:
             #print("preq:", prerequisite_res)
             #sim_list = [cal_sim(i, keyword) for i in prerequisite_res] # 得到每个preq与当前节点的相似度
             #sorted_sim = sorted(range(len(sim_list)), key = lambda x:sim_list[x], reverse=True) # 从大到小排序后的index
             #nodes = [prerequisite_res[sorted_sim[i]] for i in range(limit)] # 返回最相似的limit个节点的list
             nodes = [prerequisite_res[i] for i in range(min(len(prerequisite_res), limit))]
-            #print("nodes:", nodes)
+            print("nodes:", nodes)
             for node in nodes:
                 if depth != 3:# 跟中心节点相连的边不重复加入
                     if pre:
+                        print(self.wrap_preq(keyword.replace("_", " "), node.replace("_", " ")))
                         result.append(self.wrap_preq(keyword.replace("_", " "), node.replace("_", " ")))
                     else:
                         result.append(self.wrap_be_preq(keyword.replace("_", " "), node.replace("_", " ")))
-                #print("result:", result)
+                print("result:", result)
                 # 所有的节点都要继续BFS
                 self.BFS(node, result, depth = depth-1)
         # 如果搜索结果为空，则自动返回上一层传进来的result            

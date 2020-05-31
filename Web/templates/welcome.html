@@ -39,7 +39,7 @@
   <!-- Testimonials -->
   <section class="testimonials bg-light">
     <div class="container">
-        <h3> Results: </h3><br>
+        <!--<h3> Results: </h3><br>-->
         {% for concept in concepts %}
         <h2 class="mb-5">{{ concept["_source"]["concept"]|replace("_", " ") }}</h2>
         <p>{{ concept["_source"]["definition"] }}</p><br>

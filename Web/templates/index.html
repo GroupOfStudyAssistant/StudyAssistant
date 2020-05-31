@@ -21,9 +21,14 @@
     <!--<div class="overlay"></div>-->
     <div class="container">
       <div class="row">
+        <h1 class="mb-5 mx-auto">StudyAssistant</h1>
+        <h1 class="mb-5 mx-auto">Rich Learning Guidance In Information Sciences.</h1>
+
         <div class="col-xl-9 mx-auto">
-          <h1 class="mb-5">为你的学习提供可靠的路径规划！</h1>
+          
         </div>
+        <h2 class="col-md-7 mx-auto">Want to learn something ,but don't know where to start from?</h2>
+        <h2 class="col-md-7 mx-auto">Look it up on our website to find the most suitable learning path for you! </h2>
         <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
           <!--<form>
             <div class="form-row">
@@ -35,7 +40,7 @@
               </div>
             </div>
           </form>-->
-          <h2>探索属于你的学习助手</h2>
+          
         </div>
       </div>
     </div>
@@ -50,8 +55,9 @@
             <div class="features-icons-icon d-flex">
               <i class="icon-screen-desktop m-auto text-primary"></i>
             </div>
-            <h3>高效</h3>
-            <p class="lead mb-0">每个知识点都有优质学习资源，方便用户使用</p>
+            <h3>Concept</h3>
+            <h3>Explanation</h3>
+            <p class="lead mb-0">For each concept, a direct explanation will be shown.</p>
           </div>
         </div>
         <div class="col-lg-4">
@@ -59,8 +65,8 @@
             <div class="features-icons-icon d-flex">
               <i class="icon-layers m-auto text-primary"></i>
             </div>
-            <h3>科学</h3>
-            <p class="lead mb-0">根据用户不同的学习背景，选择不同的方向</p>
+            <h3>Learning Path Recommendation</h3>
+            <p class="lead mb-0">A recommended learning path towards certain concept will be generated.</p>
           </div>
         </div>
         <div class="col-lg-4">
@@ -68,8 +74,8 @@
             <div class="features-icons-icon d-flex">
               <i class="icon-check m-auto text-primary"></i>
             </div>
-            <h3>易用</h3>
-            <p class="lead mb-0">只需输入一个知识点，等待片刻</p>
+            <h3>Learning Resources Linking</h3>
+            <p class="lead mb-0">Linked to multiple learning resources. Get on track quickly. </p>
           </div>
         </div>
       </div>
@@ -140,7 +146,7 @@
     <div class="container">
       <div class="row">
         <div class="col-xl-9 mx-auto">
-          <h2 class="mb-4">准备好了吗？开始吧!</h2>
+          <h2 class="mb-4">Ready for a start? Let's go!</h2>
           {% if not current_user.is_authenticated %}
           <a href="{{ url_for('signup') }}">
           <button type="submit" class="btn btn-lg btn-primary" >
